@@ -37,7 +37,7 @@ import {
   MonetizationOn as RewardsIcon,
   Security as SecurityIcon,
 } from '@mui/icons-material'
-import { useAppTheme } from '../ClientThemeProvider'
+
 import Header from '../../components/Header'
 
 const stakingPools = [
@@ -308,7 +308,7 @@ function UserStakeCard({ stake }: { stake: typeof userStakes[0] }) {
 
 export default function StakePage() {
   const theme = useTheme()
-  const { mode } = useAppTheme()
+
   const [mounted, setMounted] = useState(false)
   const [activeTab, setActiveTab] = useState(0)
 

@@ -52,7 +52,7 @@ import {
   Visibility as VisibilityIcon,
   VisibilityOff as VisibilityOffIcon,
 } from '@mui/icons-material'
-import { useAppTheme } from '../ClientThemeProvider'
+
 import Header from '../../components/Header'
 
 const portfolioStats = {
@@ -348,7 +348,7 @@ function TransactionRow({ tx }: { tx: typeof portfolioStats.transactions[0] }) {
 
 export default function PortfolioPage() {
   const theme = useTheme()
-  const { mode } = useAppTheme()
+
   const [mounted, setMounted] = useState(false)
   const [activeTab, setActiveTab] = useState(0)
 

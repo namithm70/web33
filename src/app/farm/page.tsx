@@ -46,7 +46,7 @@ import {
   Remove as RemoveIcon,
   AutoAwesome as BoostIcon,
 } from '@mui/icons-material'
-import { useAppTheme } from '../ClientThemeProvider'
+
 import Header from '../../components/Header'
 
 const farmingPools = [
@@ -394,7 +394,7 @@ function UserFarmCard({ farm }: { farm: typeof userFarms[0] }) {
 
 export default function FarmPage() {
   const theme = useTheme()
-  const { mode } = useAppTheme()
+
   const [mounted, setMounted] = useState(false)
   const [activeTab, setActiveTab] = useState(0)
 

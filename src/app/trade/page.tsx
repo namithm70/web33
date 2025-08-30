@@ -31,7 +31,7 @@ import {
   ArrowDownward as ArrowDownIcon,
   ArrowUpward as ArrowUpIcon,
 } from '@mui/icons-material'
-import { useAppTheme } from '../ClientThemeProvider'
+
 import Header from '../../components/Header'
 
 const tokens = [
@@ -79,7 +79,7 @@ function TokenSelector({ value, onSelect }: { value: string; onSelect: (token: s
 
 export default function TradePage() {
   const theme = useTheme()
-  const { mode } = useAppTheme()
+
   const [mounted, setMounted] = useState(false)
   const [fromToken, setFromToken] = useState('ETH')
   const [toToken, setToToken] = useState('USDC')
