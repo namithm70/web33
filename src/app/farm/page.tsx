@@ -5,623 +5,476 @@ import {
   Box,
   Container,
   Typography,
-  Button,
   Card,
   CardContent,
   TextField,
-  IconButton,
+  Button,
+  Grid,
   Stack,
   Chip,
-  Divider,
-  Grid,
   Avatar,
+  IconButton,
   useTheme,
+  useMediaQuery,
+  Switch,
+  FormControlLabel,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
   LinearProgress,
-  Alert,
-  Tabs,
-  Tab,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemIcon,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
 } from '@mui/material'
 import {
   Agriculture as FarmingIcon,
-  TrendingUp as TrendingUpIcon,
-  TrendingDown as TrendingDownIcon,
-  Refresh as RefreshIcon,
-  Info as InfoIcon,
-  ArrowForward as ArrowForwardIcon,
-  Timer as TimerIcon,
-  MonetizationOn as RewardsIcon,
-  Security as SecurityIcon,
   Add as AddIcon,
   Remove as RemoveIcon,
-  AutoAwesome as BoostIcon,
+  Settings as SettingsIcon,
+  Star as StarIcon,
+  TrendingUp as TrendingUpIcon,
+  Timer as TimerIcon,
+  Calculate as CalculateIcon,
 } from '@mui/icons-material'
-
 import Header from '../../components/Header'
-
-const farmingPools = [
-  {
-    id: 1,
-    name: 'ETH-USDC LP',
-    token1: 'ETH',
-    token2: 'USDC',
-    icon1: '🔵',
-    icon2: '🔷',
-    apy: '45.2%',
-    tvl: '$2.1B',
-    allocPoints: 100,
-    userStaked: '0.0',
-    userRewards: '0.0',
-    multiplier: '1x',
-    status: 'active',
-    color: '#6366f1',
-    gradient: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
-    rewards: ['ETH', 'USDC'],
-  },
-  {
-    id: 2,
-    name: 'BNB-USDT LP',
-    token1: 'BNB',
-    token2: 'USDT',
-    icon1: '🟡',
-    icon2: '🟢',
-    apy: '38.7%',
-    tvl: '$1.8B',
-    allocPoints: 80,
-    userStaked: '0.0',
-    userRewards: '0.0',
-    multiplier: '0.8x',
-    status: 'active',
-    color: '#f59e0b',
-    gradient: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-    rewards: ['BNB', 'USDT'],
-  },
-  {
-    id: 3,
-    name: 'ETH-BNB LP',
-    token1: 'ETH',
-    token2: 'BNB',
-    icon1: '🔵',
-    icon2: '🟡',
-    apy: '52.1%',
-    tvl: '$950M',
-    allocPoints: 120,
-    userStaked: '0.0',
-    userRewards: '0.0',
-    multiplier: '1.2x',
-    status: 'active',
-    color: '#10b981',
-    gradient: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-    rewards: ['ETH', 'BNB'],
-  },
-]
-
-const userFarms = [
-  {
-    id: 1,
-    name: 'ETH-USDC LP',
-    token1: 'ETH',
-    token2: 'USDC',
-    icon1: '🔵',
-    icon2: '🔷',
-    staked: '12.5 LP',
-    rewards: '45.2 ETH + 1,234 USDC',
-    apy: '45.2%',
-    value: '$25,000',
-    color: '#6366f1',
-  },
-  {
-    id: 2,
-    name: 'BNB-USDT LP',
-    token1: 'BNB',
-    token2: 'USDT',
-    icon1: '🟡',
-    icon2: '🟢',
-    staked: '8.3 LP',
-    rewards: '12.8 BNB + 5,678 USDT',
-    apy: '38.7%',
-    value: '$15,500',
-    color: '#f59e0b',
-  },
-]
-
-const leaderboard = [
-  { rank: 1, address: '0x1234...5678', tvl: '$125,000', rewards: '$12,500', multiplier: '2.5x' },
-  { rank: 2, address: '0x8765...4321', tvl: '$98,000', rewards: '$9,800', multiplier: '2.0x' },
-  { rank: 3, address: '0x1111...2222', tvl: '$87,500', rewards: '$8,750', multiplier: '1.8x' },
-  { rank: 4, address: '0x3333...4444', tvl: '$76,200', rewards: '$7,620', multiplier: '1.5x' },
-  { rank: 5, address: '0x5555...6666', tvl: '$65,800', rewards: '$6,580', multiplier: '1.3x' },
-]
-
-function FarmingPoolCard({ pool }: { pool: typeof farmingPools[0] }) {
-  const theme = useTheme()
-  const [stakeAmount, setStakeAmount] = useState('')
-
-  return (
-    <Card
-      sx={{
-        background: theme.palette.background.paper,
-        border: `1px solid ${theme.palette.divider}`,
-        '&:hover': {
-          transform: 'translateY(-4px)',
-          transition: 'transform 0.3s ease',
-          boxShadow: theme.palette.mode === 'dark' 
-            ? '0 8px 32px rgba(0, 0, 0, 0.4)' 
-            : '0 8px 32px rgba(0, 0, 0, 0.12)',
-        },
-      }}
-    >
-      <CardContent sx={{ p: 3 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Box sx={{ position: 'relative' }}>
-              <Avatar
-                sx={{
-                  width: 48,
-                  height: 48,
-                  background: pool.gradient,
-                  fontSize: '1.2rem',
-                }}
-              >
-                {pool.icon1}
-              </Avatar>
-              <Avatar
-                sx={{
-                  width: 32,
-                  height: 32,
-                  background: theme.palette.background.paper,
-                  fontSize: '1rem',
-                  position: 'absolute',
-                  bottom: -8,
-                  right: -8,
-                  border: `2px solid ${theme.palette.background.paper}`,
-                }}
-              >
-                {pool.icon2}
-              </Avatar>
-            </Box>
-            <Box>
-              <Typography variant="h6" sx={{ fontWeight: 600, color: theme.palette.text.primary }}>
-                {pool.name}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Liquidity Pool
-              </Typography>
-            </Box>
-          </Box>
-          <Chip
-            label={pool.apy}
-            sx={{
-              background: 'rgba(16, 185, 129, 0.1)',
-              color: 'success.main',
-              fontWeight: 600,
-            }}
-          />
-        </Box>
-
-        <Grid container spacing={2} sx={{ mb: 3 }}>
-          <Grid item xs={6}>
-            <Typography variant="body2" color="text.secondary">
-              TVL
-            </Typography>
-            <Typography variant="h6" sx={{ fontWeight: 600, color: theme.palette.text.primary }}>
-              {pool.tvl}
-            </Typography>
-          </Grid>
-          <Grid item xs={6}>
-            <Typography variant="body2" color="text.secondary">
-              Multiplier
-            </Typography>
-            <Typography variant="h6" sx={{ fontWeight: 600, color: theme.palette.text.primary }}>
-              {pool.multiplier}
-            </Typography>
-          </Grid>
-          <Grid item xs={6}>
-            <Typography variant="body2" color="text.secondary">
-              Alloc Points
-            </Typography>
-            <Typography variant="h6" sx={{ fontWeight: 600, color: theme.palette.text.primary }}>
-              {pool.allocPoints}
-            </Typography>
-          </Grid>
-          <Grid item xs={6}>
-            <Typography variant="body2" color="text.secondary">
-              Rewards
-            </Typography>
-            <Box sx={{ display: 'flex', gap: 0.5 }}>
-              {pool.rewards.map((reward, index) => (
-                <Chip
-                  key={index}
-                  label={reward}
-                  size="small"
-                  sx={{
-                    background: 'rgba(99, 102, 241, 0.1)',
-                    color: 'primary.main',
-                    fontSize: '0.7rem',
-                  }}
-                />
-              ))}
-            </Box>
-          </Grid>
-        </Grid>
-
-        <TextField
-          fullWidth
-          placeholder="Enter LP amount to stake"
-          value={stakeAmount}
-          onChange={(e) => setStakeAmount(e.target.value)}
-          sx={{ mb: 2 }}
-        />
-
-        <Stack direction="row" spacing={1}>
-          <Button
-            variant="contained"
-            fullWidth
-            startIcon={<AddIcon />}
-            sx={{
-              background: pool.gradient,
-              '&:hover': {
-                background: pool.gradient,
-                opacity: 0.9,
-              },
-            }}
-          >
-            Stake LP
-          </Button>
-          <Button
-            variant="outlined"
-            fullWidth
-            startIcon={<RemoveIcon />}
-            sx={{
-              borderColor: theme.palette.divider,
-              color: theme.palette.text.primary,
-            }}
-          >
-            Unstake
-          </Button>
-        </Stack>
-      </CardContent>
-    </Card>
-  )
-}
-
-function UserFarmCard({ farm }: { farm: typeof userFarms[0] }) {
-  const theme = useTheme()
-
-  return (
-    <Card
-      sx={{
-        background: theme.palette.background.paper,
-        border: `1px solid ${theme.palette.divider}`,
-        '&:hover': {
-          transform: 'translateY(-2px)',
-          transition: 'transform 0.3s ease',
-        },
-      }}
-    >
-      <CardContent sx={{ p: 3 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Box sx={{ position: 'relative' }}>
-              <Avatar
-                sx={{
-                  width: 40,
-                  height: 40,
-                  background: farm.color,
-                  fontSize: '1rem',
-                }}
-              >
-                {farm.icon1}
-              </Avatar>
-              <Avatar
-                sx={{
-                  width: 28,
-                  height: 28,
-                  background: theme.palette.background.paper,
-                  fontSize: '0.8rem',
-                  position: 'absolute',
-                  bottom: -6,
-                  right: -6,
-                  border: `2px solid ${theme.palette.background.paper}`,
-                }}
-              >
-                {farm.icon2}
-              </Avatar>
-            </Box>
-            <Box>
-              <Typography variant="h6" sx={{ fontWeight: 600, color: theme.palette.text.primary }}>
-                {farm.name}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {farm.staked}
-              </Typography>
-            </Box>
-          </Box>
-          <Typography variant="h6" sx={{ fontWeight: 600, color: theme.palette.text.primary }}>
-            {farm.value}
-          </Typography>
-        </Box>
-
-        <Grid container spacing={2} sx={{ mb: 2 }}>
-          <Grid item xs={6}>
-            <Typography variant="body2" color="text.secondary">
-              Rewards
-            </Typography>
-            <Typography variant="body1" sx={{ fontWeight: 600, color: 'success.main' }}>
-              {farm.rewards}
-            </Typography>
-          </Grid>
-          <Grid item xs={6}>
-            <Typography variant="body2" color="text.secondary">
-              APY
-            </Typography>
-            <Typography variant="body1" sx={{ fontWeight: 600, color: theme.palette.text.primary }}>
-              {farm.apy}
-            </Typography>
-          </Grid>
-        </Grid>
-
-        <Stack direction="row" spacing={1}>
-          <Button
-            variant="outlined"
-            size="small"
-            sx={{ flex: 1 }}
-          >
-            Claim Rewards
-          </Button>
-          <Button
-            variant="outlined"
-            size="small"
-            sx={{ flex: 1 }}
-          >
-            Unstake
-          </Button>
-        </Stack>
-      </CardContent>
-    </Card>
-  )
-}
 
 export default function FarmPage() {
   const theme = useTheme()
-
-  const [mounted, setMounted] = useState(false)
+  const [animate, setAnimate] = useState(false)
+  const [selectedPool, setSelectedPool] = useState('')
+  const [stakeAmount, setStakeAmount] = useState('')
+  const [unstakeAmount, setUnstakeAmount] = useState('')
+  const [showSettings, setShowSettings] = useState(false)
+  const [showPoolSelector, setShowPoolSelector] = useState(false)
   const [activeTab, setActiveTab] = useState(0)
+  const [userBalance, setUserBalance] = useState<{[key: string]: number}>({})
+  const [farmedBalance, setFarmedBalance] = useState<{[key: string]: number}>({})
+  const [farmingHistory, setFarmingHistory] = useState<any[]>([])
+  const [autoCompound, setAutoCompound] = useState(false)
 
   useEffect(() => {
-    setMounted(true)
+    setAnimate(true)
   }, [])
 
-  if (!mounted) {
-    return null
+  const [availablePools, setAvailablePools] = useState([
+    { 
+      id: 'ETH-USDC', 
+      name: 'ETH-USDC LP', 
+      token1: 'ETH', 
+      token2: 'USDC', 
+      icon1: '🔵', 
+      icon2: '🔵', 
+      apr: 0, 
+      tvl: 0,
+      userStaked: 0,
+      rewards: 0
+    },
+    { 
+      id: 'USDT-DAI', 
+      name: 'USDT-DAI LP', 
+      token1: 'USDT', 
+      token2: 'DAI', 
+      icon1: '🟢', 
+      icon2: '🟡', 
+      apr: 0, 
+      tvl: 0,
+      userStaked: 0,
+      rewards: 0
+    },
+  ])
+
+  const handleStake = () => {
+    if (!selectedPool || !stakeAmount) {
+      alert('Please select a pool and enter amount')
+      return
+    }
+
+    const amount = parseFloat(stakeAmount)
+    const pool = availablePools.find(p => p.id === selectedPool)
+    
+    if (!pool) return
+
+    if (amount > (userBalance[pool.token1] || 0) || amount > (userBalance[pool.token2] || 0)) {
+      alert('Insufficient balance for both tokens')
+      return
+    }
+
+    const newStake = {
+      id: Date.now(),
+      pool: selectedPool,
+      amount: amount,
+      timestamp: new Date().toISOString(),
+      status: 'active'
+    }
+
+    setFarmingHistory([newStake, ...farmingHistory])
+    
+    // Update balances
+    setUserBalance(prev => ({
+      ...prev,
+      [pool.token1]: (prev[pool.token1] || 0) - amount,
+      [pool.token2]: (prev[pool.token2] || 0) - amount
+    }))
+    
+    setFarmedBalance(prev => ({
+      ...prev,
+      [selectedPool]: (prev[selectedPool] || 0) + amount
+    }))
+
+    // Update pool user staked amount
+    setAvailablePools(prev => prev.map(p => 
+      p.id === selectedPool ? { ...p, userStaked: p.userStaked + amount } : p
+    ))
+
+    setStakeAmount('')
+    alert(`Successfully staked ${amount} LP tokens in ${pool.name}!`)
+  }
+
+  const handleUnstake = () => {
+    if (!selectedPool || !unstakeAmount) {
+      alert('Please select a pool and enter amount')
+      return
+    }
+
+    const amount = parseFloat(unstakeAmount)
+    
+    if (amount > (farmedBalance[selectedPool] || 0)) {
+      alert('Insufficient staked balance')
+      return
+    }
+
+    const newUnstake = {
+      id: Date.now(),
+      pool: selectedPool,
+      amount: amount,
+      timestamp: new Date().toISOString(),
+      status: 'completed'
+    }
+
+    setFarmingHistory([newUnstake, ...farmingHistory])
+    
+    // Update balances
+    setFarmedBalance(prev => ({
+      ...prev,
+      [selectedPool]: (prev[selectedPool] || 0) - amount
+    }))
+
+    // Update pool user staked amount
+    setAvailablePools(prev => prev.map(p => 
+      p.id === selectedPool ? { ...p, userStaked: p.userStaked - amount } : p
+    ))
+
+    setUnstakeAmount('')
+    alert(`Successfully unstaked ${amount} LP tokens!`)
+  }
+
+  const handleHarvest = (poolId: string) => {
+    const pool = availablePools.find(p => p.id === poolId)
+    if (!pool || pool.rewards <= 0) {
+      alert('No rewards to harvest')
+      return
+    }
+
+    const newHarvest = {
+      id: Date.now(),
+      pool: poolId,
+      amount: pool.rewards,
+      timestamp: new Date().toISOString(),
+      status: 'harvested'
+    }
+
+    setFarmingHistory([newHarvest, ...farmingHistory])
+    
+    // Reset rewards
+    setAvailablePools(prev => prev.map(p => 
+      p.id === poolId ? { ...p, rewards: 0 } : p
+    ))
+
+    alert(`Successfully harvested ${pool.rewards} rewards!`)
+  }
+
+  const handleAddPool = () => {
+    const token1 = prompt('Enter first token symbol (e.g., ETH):')
+    if (!token1) return
+    
+    const token2 = prompt('Enter second token symbol (e.g., USDC):')
+    if (!token2) return
+    
+    const apr = prompt('Enter APR percentage (e.g., 25.5):')
+    
+    const newPool = {
+      id: `${token1.toUpperCase()}-${token2.toUpperCase()}`,
+      name: `${token1.toUpperCase()}-${token2.toUpperCase()} LP`,
+      token1: token1.toUpperCase(),
+      token2: token2.toUpperCase(),
+      icon1: '🪙',
+      icon2: '🪙',
+      apr: parseFloat(apr || '0'),
+      tvl: 0,
+      userStaked: 0,
+      rewards: 0
+    }
+    
+    setAvailablePools([...availablePools, newPool])
+  }
+
+  const handleSetBalance = (token: string) => {
+    const balance = prompt(`Enter your ${token} balance:`)
+    if (balance && !isNaN(parseFloat(balance))) {
+      setUserBalance(prev => ({
+        ...prev,
+        [token]: parseFloat(balance)
+      }))
+    }
+  }
+
+  const handleSetAPR = (poolId: string) => {
+    const apr = prompt(`Enter APR for ${poolId} (%):`)
+    if (apr && !isNaN(parseFloat(apr))) {
+      setAvailablePools(prev => prev.map(p => 
+        p.id === poolId ? { ...p, apr: parseFloat(apr) } : p
+      ))
+    }
+  }
+
+  const handlePoolSelect = (poolId: string) => {
+    setSelectedPool(poolId)
+    setShowPoolSelector(false)
+  }
+
+  const getTotalFarmedValue = () => {
+    return Object.values(farmedBalance).reduce((total, amount) => total + amount, 0)
+  }
+
+  const getTotalRewards = () => {
+    return availablePools.reduce((total, pool) => total + pool.rewards, 0)
   }
 
   return (
-    <Box sx={{ 
-      minHeight: '100vh', 
-      background: theme.palette.mode === 'dark'
-        ? 'linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%)'
-        : 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
-      pt: 2
-    }}>
+    <Box sx={{ minHeight: '100vh', background: 'linear-gradient(135deg, #FAFAFA 0%, #F3F4F6 100%)' }}>
       <Header />
-      <Container maxWidth="xl" sx={{ py: 4 }}>
-        {/* Header */}
-        <Box sx={{ mb: 4 }}>
-          <Typography variant="h3" sx={{ fontWeight: 700, color: theme.palette.text.primary, mb: 2 }}>
+      
+      <Container maxWidth="lg" sx={{ pt: { xs: 12, md: 16 }, pb: 8 }}>
+        <Box sx={{ textAlign: 'center', mb: 6 }}>
+          <Typography variant="h2" sx={{ fontWeight: 800, mb: 2, background: 'linear-gradient(135deg, #1F2937 0%, #374151 100%)', backgroundClip: 'text', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
             Liquidity Farming
           </Typography>
-          <Typography variant="h6" color="text.secondary">
-            Provide liquidity and earn additional rewards through farming
+          <Typography variant="h5" sx={{ color: theme.palette.text.secondary, maxWidth: 600, mx: 'auto' }}>
+            Provide liquidity and earn rewards with competitive APR rates
           </Typography>
         </Box>
 
-        {/* Stats Cards */}
-        <Grid container spacing={3} sx={{ mb: 4 }}>
-          <Grid item xs={12} sm={6} md={3}>
-            <Card sx={{ background: theme.palette.background.paper }}>
-              <CardContent sx={{ p: 3, textAlign: 'center' }}>
-                <Avatar
-                  sx={{
-                    mx: 'auto',
-                    mb: 2,
-                    width: 56,
-                    height: 56,
-                    background: 'linear-gradient(45deg, #6366f1, #4f46e5)',
-                  }}
-                >
-                  <FarmingIcon />
-                </Avatar>
-                <Typography variant="h4" sx={{ fontWeight: 700, color: theme.palette.text.primary }}>
-                  $40,500
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Total Farmed Value
-                </Typography>
-              </CardContent>
+        <Grid container spacing={4}>
+          <Grid item xs={12} lg={8}>
+            <Card sx={{ background: 'rgba(255, 255, 255, 0.95)', backdropFilter: 'blur(20px)', borderRadius: 4, p: 4, boxShadow: '0 20px 60px rgba(0, 0, 0, 0.1)', border: '1px solid rgba(255, 255, 255, 0.2)', opacity: animate ? 1 : 0, transform: animate ? 'translateY(0)' : 'translateY(30px)', transition: 'all 0.6s ease-out' }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+                <Typography variant="h5" sx={{ fontWeight: 700, color: '#1F2937' }}>Farming Dashboard</Typography>
+                <IconButton onClick={() => setShowSettings(!showSettings)} sx={{ background: 'rgba(124, 58, 237, 0.1)', '&:hover': { background: 'rgba(124, 58, 237, 0.15)' } }}>
+                  <SettingsIcon />
+                </IconButton>
+              </Box>
+
+              {showSettings && (
+                <Box sx={{ mb: 3, p: 3, borderRadius: 2, background: 'rgba(124, 58, 237, 0.05)' }}>
+                  <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>Farming Settings</Typography>
+                  <FormControlLabel control={<Switch checked={autoCompound} onChange={(e) => setAutoCompound(e.target.checked)} />} label="Auto-compound rewards" />
+                </Box>
+              )}
+
+              <Box sx={{ mb: 3 }}>
+                <Button onClick={() => setActiveTab(0)} sx={{ mr: 2, color: activeTab === 0 ? '#7C3AED' : theme.palette.text.secondary }}>Stake LP</Button>
+                <Button onClick={() => setActiveTab(1)} sx={{ color: activeTab === 1 ? '#7C3AED' : theme.palette.text.secondary }}>Unstake LP</Button>
+              </Box>
+
+              {activeTab === 0 && (
+                <Box>
+                  <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>Stake LP Tokens</Typography>
+                  
+                  <Box sx={{ mb: 3 }}>
+                    <Typography variant="subtitle2" sx={{ mb: 1, color: theme.palette.text.secondary, fontWeight: 600 }}>Select Pool</Typography>
+                    <Button onClick={() => setShowPoolSelector(true)} sx={{ display: 'flex', alignItems: 'center', gap: 2, background: 'rgba(124, 58, 237, 0.05)', borderRadius: 2, px: 3, py: 2, border: '2px solid rgba(124, 58, 237, 0.1)', '&:hover': { background: 'rgba(124, 58, 237, 0.1)', borderColor: 'rgba(124, 58, 237, 0.2)' } }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        {selectedPool ? (
+                          <>
+                            <Avatar sx={{ width: 24, height: 24, background: 'linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%)' }}>
+                              {availablePools.find(p => p.id === selectedPool)?.icon1}
+                            </Avatar>
+                            <Avatar sx={{ width: 24, height: 24, background: 'linear-gradient(135deg, #10B981 0%, #34D399 100%)' }}>
+                              {availablePools.find(p => p.id === selectedPool)?.icon2}
+                            </Avatar>
+                          </>
+                        ) : (
+                          <Avatar sx={{ width: 32, height: 32, background: 'linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%)' }}>?</Avatar>
+                        )}
+                      </Box>
+                      <Typography variant="h6" sx={{ fontWeight: 700 }}>{selectedPool ? availablePools.find(p => p.id === selectedPool)?.name : 'Select Pool'}</Typography>
+                    </Button>
+                  </Box>
+
+                  <Box sx={{ mb: 3 }}>
+                    <Typography variant="subtitle2" sx={{ mb: 1, color: theme.palette.text.secondary, fontWeight: 600 }}>Amount to Stake</Typography>
+                    <TextField fullWidth value={stakeAmount} onChange={(e) => setStakeAmount(e.target.value)} type="number" placeholder="0.0" sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2, fontSize: '1.2rem', fontWeight: 600 } }} />
+                    {selectedPool && (
+                      <Typography variant="body2" sx={{ color: theme.palette.text.secondary, mt: 1 }}>
+                        Available: {userBalance[availablePools.find(p => p.id === selectedPool)?.token1 || ''] || 0} {availablePools.find(p => p.id === selectedPool)?.token1} / {userBalance[availablePools.find(p => p.id === selectedPool)?.token2 || ''] || 0} {availablePools.find(p => p.id === selectedPool)?.token2}
+                      </Typography>
+                    )}
+                  </Box>
+
+                  {selectedPool && (
+                    <Box sx={{ mb: 3, p: 2, borderRadius: 2, background: 'rgba(16, 185, 129, 0.05)' }}>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Typography variant="body2" sx={{ color: theme.palette.text.secondary }}>APR Rate</Typography>
+                        <Typography variant="h6" sx={{ fontWeight: 700, color: '#10B981' }}>{availablePools.find(p => p.id === selectedPool)?.apr || 0}%</Typography>
+                      </Box>
+                    </Box>
+                  )}
+
+                  <Button variant="contained" fullWidth size="large" onClick={handleStake} disabled={!selectedPool || !stakeAmount} startIcon={<FarmingIcon />} sx={{ py: 2, fontSize: '1.1rem', fontWeight: 600, borderRadius: 3, background: 'linear-gradient(135deg, #10B981 0%, #34D399 100%)', boxShadow: '0 8px 25px rgba(16, 185, 129, 0.3)', '&:hover': { background: 'linear-gradient(135deg, #059669 0%, #10B981 100%)', transform: 'translateY(-2px)', boxShadow: '0 12px 35px rgba(16, 185, 129, 0.4)' }, '&:disabled': { background: 'rgba(0, 0, 0, 0.12)', transform: 'none', boxShadow: 'none' } }}>
+                    {!selectedPool ? 'Select Pool' : `Stake ${stakeAmount || '0'} LP Tokens`}
+                  </Button>
+                </Box>
+              )}
+
+              {activeTab === 1 && (
+                <Box>
+                  <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>Unstake LP Tokens</Typography>
+                  
+                  <Box sx={{ mb: 3 }}>
+                    <Typography variant="subtitle2" sx={{ mb: 1, color: theme.palette.text.secondary, fontWeight: 600 }}>Select Pool</Typography>
+                    <Button onClick={() => setShowPoolSelector(true)} sx={{ display: 'flex', alignItems: 'center', gap: 2, background: 'rgba(239, 68, 68, 0.05)', borderRadius: 2, px: 3, py: 2, border: '2px solid rgba(239, 68, 68, 0.1)', '&:hover': { background: 'rgba(239, 68, 68, 0.1)', borderColor: 'rgba(239, 68, 68, 0.2)' } }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        {selectedPool ? (
+                          <>
+                            <Avatar sx={{ width: 24, height: 24, background: 'linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%)' }}>
+                              {availablePools.find(p => p.id === selectedPool)?.icon1}
+                            </Avatar>
+                            <Avatar sx={{ width: 24, height: 24, background: 'linear-gradient(135deg, #10B981 0%, #34D399 100%)' }}>
+                              {availablePools.find(p => p.id === selectedPool)?.icon2}
+                            </Avatar>
+                          </>
+                        ) : (
+                          <Avatar sx={{ width: 32, height: 32, background: 'linear-gradient(135deg, #EF4444 0%, #F87171 100%)' }}>?</Avatar>
+                        )}
+                      </Box>
+                      <Typography variant="h6" sx={{ fontWeight: 700 }}>{selectedPool ? availablePools.find(p => p.id === selectedPool)?.name : 'Select Pool'}</Typography>
+                    </Button>
+                  </Box>
+
+                  <Box sx={{ mb: 3 }}>
+                    <Typography variant="subtitle2" sx={{ mb: 1, color: theme.palette.text.secondary, fontWeight: 600 }}>Amount to Unstake</Typography>
+                    <TextField fullWidth value={unstakeAmount} onChange={(e) => setUnstakeAmount(e.target.value)} type="number" placeholder="0.0" sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2, fontSize: '1.2rem', fontWeight: 600 } }} />
+                    {selectedPool && (
+                      <Typography variant="body2" sx={{ color: theme.palette.text.secondary, mt: 1 }}>
+                        Staked: {farmedBalance[selectedPool] || 0} LP Tokens
+                      </Typography>
+                    )}
+                  </Box>
+
+                  <Button variant="contained" fullWidth size="large" onClick={handleUnstake} disabled={!selectedPool || !unstakeAmount} startIcon={<RemoveIcon />} sx={{ py: 2, fontSize: '1.1rem', fontWeight: 600, borderRadius: 3, background: 'linear-gradient(135deg, #EF4444 0%, #F87171 100%)', boxShadow: '0 8px 25px rgba(239, 68, 68, 0.3)', '&:hover': { background: 'linear-gradient(135deg, #DC2626 0%, #EF4444 100%)', transform: 'translateY(-2px)', boxShadow: '0 12px 35px rgba(239, 68, 68, 0.4)' }, '&:disabled': { background: 'rgba(0, 0, 0, 0.12)', transform: 'none', boxShadow: 'none' } }}>
+                    {!selectedPool ? 'Select Pool' : `Unstake ${unstakeAmount || '0'} LP Tokens`}
+                  </Button>
+                </Box>
+              )}
             </Card>
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <Card sx={{ background: theme.palette.background.paper }}>
-              <CardContent sx={{ p: 3, textAlign: 'center' }}>
-                <Avatar
-                  sx={{
-                    mx: 'auto',
-                    mb: 2,
-                    width: 56,
-                    height: 56,
-                    background: 'linear-gradient(45deg, #10b981, #059669)',
-                  }}
-                >
-                  <RewardsIcon />
-                </Avatar>
-                <Typography variant="h4" sx={{ fontWeight: 700, color: 'success.main' }}>
-                  $2,150
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Total Rewards Earned
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <Card sx={{ background: theme.palette.background.paper }}>
-              <CardContent sx={{ p: 3, textAlign: 'center' }}>
-                <Avatar
-                  sx={{
-                    mx: 'auto',
-                    mb: 2,
-                    width: 56,
-                    height: 56,
-                    background: 'linear-gradient(45deg, #f59e0b, #d97706)',
-                  }}
-                >
-                  <BoostIcon />
-                </Avatar>
-                <Typography variant="h4" sx={{ fontWeight: 700, color: theme.palette.text.primary }}>
-                  45.3%
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Average APY
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <Card sx={{ background: theme.palette.background.paper }}>
-              <CardContent sx={{ p: 3, textAlign: 'center' }}>
-                <Avatar
-                  sx={{
-                    mx: 'auto',
-                    mb: 2,
-                    width: 56,
-                    height: 56,
-                    background: 'linear-gradient(45deg, #ef4444, #dc2626)',
-                  }}
-                >
-                  <SecurityIcon />
-                </Avatar>
-                <Typography variant="h4" sx={{ fontWeight: 700, color: theme.palette.text.primary }}>
-                  2
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Active Farms
-                </Typography>
-              </CardContent>
-            </Card>
+
+          <Grid item xs={12} lg={4}>
+            <Stack spacing={3}>
+              <Card sx={{ background: 'rgba(255, 255, 255, 0.95)', backdropFilter: 'blur(20px)', borderRadius: 3, p: 3, boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08)', border: '1px solid rgba(255, 255, 255, 0.2)' }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+                  <Typography variant="h6" sx={{ fontWeight: 700, color: '#1F2937' }}>Farming Pools</Typography>
+                  <Button size="small" startIcon={<AddIcon />} onClick={handleAddPool} sx={{ color: '#7C3AED' }}>Add Pool</Button>
+                </Box>
+                <Stack spacing={2}>
+                  {availablePools.map((pool) => (
+                    <Box key={pool.id} sx={{ p: 2, borderRadius: 2, background: 'rgba(124, 58, 237, 0.05)', transition: 'all 0.3s ease', '&:hover': { background: 'rgba(124, 58, 237, 0.1)' } }}>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            <Avatar sx={{ width: 24, height: 24, background: 'linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%)' }}>{pool.icon1}</Avatar>
+                            <Avatar sx={{ width: 24, height: 24, background: 'linear-gradient(135deg, #10B981 0%, #34D399 100%)' }}>{pool.icon2}</Avatar>
+                          </Box>
+                          <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>{pool.name}</Typography>
+                        </Box>
+                        <IconButton size="small" onClick={() => handleSetAPR(pool.id)} sx={{ color: theme.palette.text.secondary }}>
+                          <SettingsIcon fontSize="small" />
+                        </IconButton>
+                      </Box>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                        <Typography variant="body2" sx={{ color: theme.palette.text.secondary }}>APR: {pool.apr}%</Typography>
+                        <Typography variant="body2" sx={{ color: theme.palette.text.secondary }}>Staked: {pool.userStaked}</Typography>
+                      </Box>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                        <Typography variant="body2" sx={{ color: theme.palette.text.secondary }}>Rewards: {pool.rewards.toFixed(4)}</Typography>
+                        <Button size="small" onClick={() => handleHarvest(pool.id)} disabled={pool.rewards <= 0} sx={{ color: '#10B981', fontSize: '0.75rem' }}>Harvest</Button>
+                      </Box>
+                      <Button size="small" onClick={() => handleSetBalance(pool.token1)} sx={{ color: '#7C3AED', fontSize: '0.75rem', mr: 1 }}>Set {pool.token1}</Button>
+                      <Button size="small" onClick={() => handleSetBalance(pool.token2)} sx={{ color: '#7C3AED', fontSize: '0.75rem' }}>Set {pool.token2}</Button>
+                    </Box>
+                  ))}
+                </Stack>
+              </Card>
+
+              <Card sx={{ background: 'rgba(255, 255, 255, 0.95)', backdropFilter: 'blur(20px)', borderRadius: 3, p: 3, boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08)', border: '1px solid rgba(255, 255, 255, 0.2)' }}>
+                <Typography variant="h6" sx={{ mb: 3, fontWeight: 700, color: '#1F2937' }}>Farming Stats</Typography>
+                <Stack spacing={2}>
+                  <Box sx={{ p: 2, borderRadius: 2, background: 'rgba(16, 185, 129, 0.05)' }}>
+                    <Typography variant="h4" sx={{ fontWeight: 800, color: '#10B981', mb: 1 }}>{getTotalFarmedValue().toFixed(2)}</Typography>
+                    <Typography variant="body2" sx={{ color: theme.palette.text.secondary }}>Total Value Farmed</Typography>
+                  </Box>
+                  <Box sx={{ p: 2, borderRadius: 2, background: 'rgba(124, 58, 237, 0.05)' }}>
+                    <Typography variant="h4" sx={{ fontWeight: 800, color: '#7C3AED', mb: 1 }}>{getTotalRewards().toFixed(4)}</Typography>
+                    <Typography variant="body2" sx={{ color: theme.palette.text.secondary }}>Total Rewards Earned</Typography>
+                  </Box>
+                </Stack>
+              </Card>
+
+              <Card sx={{ background: 'rgba(255, 255, 255, 0.95)', backdropFilter: 'blur(20px)', borderRadius: 3, p: 3, boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08)', border: '1px solid rgba(255, 255, 255, 0.2)' }}>
+                <Typography variant="h6" sx={{ mb: 3, fontWeight: 700, color: '#1F2937' }}>Farming History</Typography>
+                <Stack spacing={2}>
+                  {farmingHistory.slice(0, 5).map((farm) => (
+                    <Box key={farm.id} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', p: 2, borderRadius: 2, background: 'rgba(0, 0, 0, 0.02)' }}>
+                      <Box>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>{farm.amount} {farm.pool}</Typography>
+                        <Typography variant="caption" sx={{ color: theme.palette.text.secondary }}>{new Date(farm.timestamp).toLocaleString()}</Typography>
+                      </Box>
+                      <Chip label={farm.status} size="small" sx={{ background: farm.status === 'active' ? 'rgba(16, 185, 129, 0.1)' : farm.status === 'harvested' ? 'rgba(124, 58, 237, 0.1)' : 'rgba(239, 68, 68, 0.1)', color: farm.status === 'active' ? '#10B981' : farm.status === 'harvested' ? '#7C3AED' : '#EF4444' }} />
+                    </Box>
+                  ))}
+                  {farmingHistory.length === 0 && (
+                    <Typography variant="body2" sx={{ color: theme.palette.text.secondary, textAlign: 'center', py: 2 }}>No farming history yet. Start farming to see your activity.</Typography>
+                  )}
+                </Stack>
+              </Card>
+            </Stack>
           </Grid>
         </Grid>
-
-        {/* Tabs */}
-        <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 4 }}>
-          <Tabs
-            value={activeTab}
-            onChange={(e, newValue) => setActiveTab(newValue)}
-            sx={{
-              '& .MuiTab-root': {
-                color: theme.palette.text.secondary,
-                fontWeight: 600,
-                '&.Mui-selected': {
-                  color: theme.palette.primary.main,
-                },
-              },
-            }}
-          >
-            <Tab label="Available Pools" />
-            <Tab label="My Farms" />
-            <Tab label="Leaderboard" />
-          </Tabs>
-        </Box>
-
-        {/* Tab Content */}
-        {activeTab === 0 && (
-          <Grid container spacing={3}>
-            {farmingPools.map((pool) => (
-              <Grid item xs={12} md={6} lg={4} key={pool.id}>
-                <FarmingPoolCard pool={pool} />
-              </Grid>
-            ))}
-          </Grid>
-        )}
-
-        {activeTab === 1 && (
-          <Grid container spacing={3}>
-            {userFarms.map((farm) => (
-              <Grid item xs={12} md={6} key={farm.id}>
-                <UserFarmCard farm={farm} />
-              </Grid>
-            ))}
-          </Grid>
-        )}
-
-        {activeTab === 2 && (
-          <Card sx={{ background: theme.palette.background.paper }}>
-            <CardContent sx={{ p: 3 }}>
-              <Typography variant="h6" sx={{ fontWeight: 600, mb: 3, color: theme.palette.text.primary }}>
-                Top Farmers
-              </Typography>
-              <TableContainer>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell sx={{ fontWeight: 600 }}>Rank</TableCell>
-                      <TableCell sx={{ fontWeight: 600 }}>Address</TableCell>
-                      <TableCell sx={{ fontWeight: 600 }}>TVL</TableCell>
-                      <TableCell sx={{ fontWeight: 600 }}>Rewards</TableCell>
-                      <TableCell sx={{ fontWeight: 600 }}>Multiplier</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {leaderboard.map((row) => (
-                      <TableRow key={row.rank}>
-                        <TableCell>
-                          <Chip
-                            label={`#${row.rank}`}
-                            size="small"
-                            sx={{
-                              background: row.rank === 1 ? 'rgba(255, 215, 0, 0.1)' :
-                                        row.rank === 2 ? 'rgba(192, 192, 192, 0.1)' :
-                                        row.rank === 3 ? 'rgba(205, 127, 50, 0.1)' : 'rgba(99, 102, 241, 0.1)',
-                              color: row.rank === 1 ? '#FFD700' :
-                                     row.rank === 2 ? '#C0C0C0' :
-                                     row.rank === 3 ? '#CD7F32' : 'primary.main',
-                              fontWeight: 600,
-                            }}
-                          />
-                        </TableCell>
-                        <TableCell sx={{ fontFamily: 'monospace' }}>{row.address}</TableCell>
-                        <TableCell sx={{ fontWeight: 600 }}>{row.tvl}</TableCell>
-                        <TableCell sx={{ fontWeight: 600, color: 'success.main' }}>{row.rewards}</TableCell>
-                        <TableCell>
-                          <Chip
-                            label={row.multiplier}
-                            size="small"
-                            sx={{
-                              background: 'rgba(245, 158, 11, 0.1)',
-                              color: 'warning.main',
-                              fontWeight: 600,
-                            }}
-                          />
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </CardContent>
-          </Card>
-        )}
       </Container>
+
+      <Dialog open={showPoolSelector} onClose={() => setShowPoolSelector(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>Select Pool</DialogTitle>
+        <DialogContent>
+          <Stack spacing={2} sx={{ mt: 2 }}>
+            {availablePools.map((pool) => (
+              <Button key={pool.id} onClick={() => handlePoolSelect(pool.id)} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', p: 2, borderRadius: 2, background: 'rgba(124, 58, 237, 0.05)', '&:hover': { background: 'rgba(124, 58, 237, 0.1)' } }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Avatar sx={{ width: 24, height: 24, background: 'linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%)' }}>{pool.icon1}</Avatar>
+                    <Avatar sx={{ width: 24, height: 24, background: 'linear-gradient(135deg, #10B981 0%, #34D399 100%)' }}>{pool.icon2}</Avatar>
+                  </Box>
+                  <Box>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>{pool.name}</Typography>
+                    <Typography variant="caption" sx={{ color: theme.palette.text.secondary }}>APR: {pool.apr}%</Typography>
+                  </Box>
+                </Box>
+                <Typography variant="body2" sx={{ color: theme.palette.text.secondary }}>Staked: {pool.userStaked}</Typography>
+              </Button>
+            ))}
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowPoolSelector(false)}>Cancel</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   )
 }

@@ -5,478 +5,319 @@ import {
   Box,
   Container,
   Typography,
-  Button,
   Card,
   CardContent,
   TextField,
-  IconButton,
+  Button,
+  Grid,
   Stack,
   Chip,
-  Divider,
-  Grid,
   Avatar,
+  IconButton,
   useTheme,
-  LinearProgress,
-  Alert,
-  Tabs,
-  Tab,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemIcon,
+  useMediaQuery,
+  Switch,
+  FormControlLabel,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from '@mui/material'
 import {
   AccountBalance as StakingIcon,
   Lock as LockIcon,
-  TrendingUp as TrendingUpIcon,
-  TrendingDown as TrendingDownIcon,
-  Refresh as RefreshIcon,
-  Info as InfoIcon,
-  ArrowForward as ArrowForwardIcon,
-  Timer as TimerIcon,
-  MonetizationOn as RewardsIcon,
-  Security as SecurityIcon,
+  LockOpenOutlined as UnlockIcon,
+  Settings as SettingsIcon,
+  Add as AddIcon,
+  Star as StarIcon,
 } from '@mui/icons-material'
-
 import Header from '../../components/Header'
-
-const stakingPools = [
-  {
-    id: 1,
-    token: 'ETH',
-    name: 'Ethereum Staking',
-    icon: '🔵',
-    apy: '4.2%',
-    tvl: '$1.2B',
-    minStake: '0.1 ETH',
-    lockPeriod: '30 days',
-    rewards: 'ETH + Protocol tokens',
-    color: '#6366f1',
-    gradient: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
-  },
-  {
-    id: 2,
-    token: 'USDC',
-    name: 'USDC Staking',
-    icon: '🔷',
-    apy: '8.5%',
-    tvl: '$850M',
-    minStake: '100 USDC',
-    lockPeriod: '7 days',
-    rewards: 'USDC + Protocol tokens',
-    color: '#10b981',
-    gradient: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-  },
-  {
-    id: 3,
-    token: 'BNB',
-    name: 'BNB Staking',
-    icon: '🟡',
-    apy: '6.8%',
-    tvl: '$650M',
-    minStake: '1 BNB',
-    lockPeriod: '14 days',
-    rewards: 'BNB + Protocol tokens',
-    color: '#f59e0b',
-    gradient: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-  },
-]
-
-const userStakes = [
-  {
-    id: 1,
-    token: 'ETH',
-    icon: '🔵',
-    staked: '2.5 ETH',
-    rewards: '0.12 ETH',
-    apy: '4.2%',
-    lockEnd: '2024-02-15',
-    value: '$6,125',
-    color: '#6366f1',
-  },
-  {
-    id: 2,
-    token: 'USDC',
-    icon: '🔷',
-    staked: '5,000 USDC',
-    rewards: '425 USDC',
-    apy: '8.5%',
-    lockEnd: '2024-01-20',
-    value: '$5,425',
-    color: '#10b981',
-  },
-]
-
-function StakingPoolCard({ pool }: { pool: typeof stakingPools[0] }) {
-  const theme = useTheme()
-  const [stakeAmount, setStakeAmount] = useState('')
-
-  return (
-    <Card
-      sx={{
-        background: theme.palette.background.paper,
-        border: `1px solid ${theme.palette.divider}`,
-        '&:hover': {
-          transform: 'translateY(-4px)',
-          transition: 'transform 0.3s ease',
-          boxShadow: theme.palette.mode === 'dark' 
-            ? '0 8px 32px rgba(0, 0, 0, 0.4)' 
-            : '0 8px 32px rgba(0, 0, 0, 0.12)',
-        },
-      }}
-    >
-      <CardContent sx={{ p: 3 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Avatar
-              sx={{
-                width: 48,
-                height: 48,
-                background: pool.gradient,
-                fontSize: '1.2rem',
-              }}
-            >
-              {pool.icon}
-            </Avatar>
-            <Box>
-              <Typography variant="h6" sx={{ fontWeight: 600, color: theme.palette.text.primary }}>
-                {pool.name}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {pool.token} Staking Pool
-              </Typography>
-            </Box>
-          </Box>
-          <Chip
-            label={pool.apy}
-            sx={{
-              background: 'rgba(16, 185, 129, 0.1)',
-              color: 'success.main',
-              fontWeight: 600,
-            }}
-          />
-        </Box>
-
-        <Grid container spacing={2} sx={{ mb: 3 }}>
-          <Grid item xs={6}>
-            <Typography variant="body2" color="text.secondary">
-              TVL
-            </Typography>
-            <Typography variant="h6" sx={{ fontWeight: 600, color: theme.palette.text.primary }}>
-              {pool.tvl}
-            </Typography>
-          </Grid>
-          <Grid item xs={6}>
-            <Typography variant="body2" color="text.secondary">
-              Min Stake
-            </Typography>
-            <Typography variant="h6" sx={{ fontWeight: 600, color: theme.palette.text.primary }}>
-              {pool.minStake}
-            </Typography>
-          </Grid>
-          <Grid item xs={6}>
-            <Typography variant="body2" color="text.secondary">
-              Lock Period
-            </Typography>
-            <Typography variant="h6" sx={{ fontWeight: 600, color: theme.palette.text.primary }}>
-              {pool.lockPeriod}
-            </Typography>
-          </Grid>
-          <Grid item xs={6}>
-            <Typography variant="body2" color="text.secondary">
-              Rewards
-            </Typography>
-            <Typography variant="h6" sx={{ fontWeight: 600, color: theme.palette.text.primary }}>
-              {pool.rewards}
-            </Typography>
-          </Grid>
-        </Grid>
-
-        <TextField
-          fullWidth
-          placeholder="Enter amount to stake"
-          value={stakeAmount}
-          onChange={(e) => setStakeAmount(e.target.value)}
-          sx={{ mb: 2 }}
-        />
-
-        <Button
-          variant="contained"
-          fullWidth
-          sx={{
-            background: pool.gradient,
-            '&:hover': {
-              background: pool.gradient,
-              opacity: 0.9,
-            },
-          }}
-        >
-          Stake {pool.token}
-        </Button>
-      </CardContent>
-    </Card>
-  )
-}
-
-function UserStakeCard({ stake }: { stake: typeof userStakes[0] }) {
-  const theme = useTheme()
-
-  return (
-    <Card
-      sx={{
-        background: theme.palette.background.paper,
-        border: `1px solid ${theme.palette.divider}`,
-        '&:hover': {
-          transform: 'translateY(-2px)',
-          transition: 'transform 0.3s ease',
-        },
-      }}
-    >
-      <CardContent sx={{ p: 3 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Avatar
-              sx={{
-                width: 40,
-                height: 40,
-                background: stake.color,
-                fontSize: '1rem',
-              }}
-            >
-              {stake.icon}
-            </Avatar>
-            <Box>
-              <Typography variant="h6" sx={{ fontWeight: 600, color: theme.palette.text.primary }}>
-                {stake.token} Staking
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {stake.staked}
-              </Typography>
-            </Box>
-          </Box>
-          <Typography variant="h6" sx={{ fontWeight: 600, color: theme.palette.text.primary }}>
-            {stake.value}
-          </Typography>
-        </Box>
-
-        <Grid container spacing={2} sx={{ mb: 2 }}>
-          <Grid item xs={6}>
-            <Typography variant="body2" color="text.secondary">
-              Rewards
-            </Typography>
-            <Typography variant="body1" sx={{ fontWeight: 600, color: 'success.main' }}>
-              {stake.rewards}
-            </Typography>
-          </Grid>
-          <Grid item xs={6}>
-            <Typography variant="body2" color="text.secondary">
-              APY
-            </Typography>
-            <Typography variant="body1" sx={{ fontWeight: 600, color: theme.palette.text.primary }}>
-              {stake.apy}
-            </Typography>
-          </Grid>
-        </Grid>
-
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-          <TimerIcon sx={{ fontSize: 16, color: 'text.secondary' }} />
-          <Typography variant="body2" color="text.secondary">
-            Lock ends: {stake.lockEnd}
-          </Typography>
-        </Box>
-
-        <Stack direction="row" spacing={1}>
-          <Button
-            variant="outlined"
-            size="small"
-            sx={{ flex: 1 }}
-          >
-            Claim Rewards
-          </Button>
-          <Button
-            variant="outlined"
-            size="small"
-            sx={{ flex: 1 }}
-          >
-            Unstake
-          </Button>
-        </Stack>
-      </CardContent>
-    </Card>
-  )
-}
 
 export default function StakePage() {
   const theme = useTheme()
-
-  const [mounted, setMounted] = useState(false)
+  const [animate, setAnimate] = useState(false)
+  const [selectedToken, setSelectedToken] = useState('')
+  const [stakeAmount, setStakeAmount] = useState('')
+  const [unstakeAmount, setUnstakeAmount] = useState('')
+  const [showSettings, setShowSettings] = useState(false)
+  const [showTokenSelector, setShowTokenSelector] = useState(false)
   const [activeTab, setActiveTab] = useState(0)
+  const [userBalance, setUserBalance] = useState<{[key: string]: number}>({})
+  const [stakedBalance, setStakedBalance] = useState<{[key: string]: number}>({})
+  const [stakingHistory, setStakingHistory] = useState<any[]>([])
+  const [autoCompound, setAutoCompound] = useState(false)
 
   useEffect(() => {
-    setMounted(true)
+    setAnimate(true)
   }, [])
 
-  if (!mounted) {
-    return null
+  const [availableTokens, setAvailableTokens] = useState([
+    { symbol: 'ETH', name: 'Ethereum', icon: '🔵', apy: 0, minStake: 0.1 },
+    { symbol: 'USDC', name: 'USD Coin', icon: '🔵', apy: 0, minStake: 10 },
+    { symbol: 'USDT', name: 'Tether', icon: '🟢', apy: 0, minStake: 10 },
+    { symbol: 'DAI', name: 'Dai', icon: '🟡', apy: 0, minStake: 10 },
+  ])
+
+  const handleStake = () => {
+    if (!selectedToken || !stakeAmount) {
+      alert('Please select a token and enter amount')
+      return
+    }
+
+    const amount = parseFloat(stakeAmount)
+    if (amount > (userBalance[selectedToken] || 0)) {
+      alert('Insufficient balance')
+      return
+    }
+
+    const newStake = {
+      id: Date.now(),
+      token: selectedToken,
+      amount: amount,
+      timestamp: new Date().toISOString(),
+      status: 'active'
+    }
+
+    setStakingHistory([newStake, ...stakingHistory])
+    setUserBalance(prev => ({ ...prev, [selectedToken]: (prev[selectedToken] || 0) - amount }))
+    setStakedBalance(prev => ({ ...prev, [selectedToken]: (prev[selectedToken] || 0) + amount }))
+    setStakeAmount('')
+    alert(`Successfully staked ${amount} ${selectedToken}!`)
+  }
+
+  const handleUnstake = () => {
+    if (!selectedToken || !unstakeAmount) {
+      alert('Please select a token and enter amount')
+      return
+    }
+
+    const amount = parseFloat(unstakeAmount)
+    if (amount > (stakedBalance[selectedToken] || 0)) {
+      alert('Insufficient staked balance')
+      return
+    }
+
+    const newUnstake = {
+      id: Date.now(),
+      token: selectedToken,
+      amount: amount,
+      timestamp: new Date().toISOString(),
+      status: 'completed'
+    }
+
+    setStakingHistory([newUnstake, ...stakingHistory])
+    setStakedBalance(prev => ({ ...prev, [selectedToken]: (prev[selectedToken] || 0) - amount }))
+    setUserBalance(prev => ({ ...prev, [selectedToken]: (prev[selectedToken] || 0) + amount }))
+    setUnstakeAmount('')
+    alert(`Successfully unstaked ${amount} ${selectedToken}!`)
+  }
+
+  const handleAddToken = () => {
+    const newToken = prompt('Enter token symbol (e.g., BTC):')
+    if (newToken) {
+      const apy = prompt('Enter APY percentage (e.g., 12.5):')
+      const newTokenData = {
+        symbol: newToken.toUpperCase(),
+        name: newToken.toUpperCase(),
+        icon: '🪙',
+        apy: parseFloat(apy || '0'),
+        minStake: 0.1
+      }
+      setAvailableTokens([...availableTokens, newTokenData])
+    }
+  }
+
+  const handleSetBalance = (token: string) => {
+    const balance = prompt(`Enter your ${token} balance:`)
+    if (balance && !isNaN(parseFloat(balance))) {
+      setUserBalance(prev => ({ ...prev, [token]: parseFloat(balance) }))
+    }
+  }
+
+  const handleSetAPY = (token: string) => {
+    const apy = prompt(`Enter APY for ${token} (%):`)
+    if (apy && !isNaN(parseFloat(apy))) {
+      setAvailableTokens(prev => prev.map(t => t.symbol === token ? { ...t, apy: parseFloat(apy) } : t))
+    }
+  }
+
+  const handleTokenSelect = (token: string) => {
+    setSelectedToken(token)
+    setShowTokenSelector(false)
   }
 
   return (
-    <Box sx={{ 
-      minHeight: '100vh', 
-      background: theme.palette.mode === 'dark'
-        ? 'linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%)'
-        : 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
-      pt: 2
-    }}>
+    <Box sx={{ minHeight: '100vh', background: 'linear-gradient(135deg, #FAFAFA 0%, #F3F4F6 100%)' }}>
       <Header />
-      <Container maxWidth="xl" sx={{ py: 4 }}>
-        {/* Header */}
-        <Box sx={{ mb: 4 }}>
-          <Typography variant="h3" sx={{ fontWeight: 700, color: theme.palette.text.primary, mb: 2 }}>
-            Staking Dashboard
+      
+      <Container maxWidth="lg" sx={{ pt: { xs: 12, md: 16 }, pb: 8 }}>
+        <Box sx={{ textAlign: 'center', mb: 6 }}>
+          <Typography variant="h2" sx={{ fontWeight: 800, mb: 2, background: 'linear-gradient(135deg, #1F2937 0%, #374151 100%)', backgroundClip: 'text', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            Stake & Earn
           </Typography>
-          <Typography variant="h6" color="text.secondary">
-            Earn rewards by staking your tokens with competitive APY rates
+          <Typography variant="h5" sx={{ color: theme.palette.text.secondary, maxWidth: 600, mx: 'auto' }}>
+            Stake your tokens and earn passive income with customizable APY rates
           </Typography>
         </Box>
 
-        {/* Stats Cards */}
-        <Grid container spacing={3} sx={{ mb: 4 }}>
-          <Grid item xs={12} sm={6} md={3}>
-            <Card sx={{ background: theme.palette.background.paper }}>
-              <CardContent sx={{ p: 3, textAlign: 'center' }}>
-                <Avatar
-                  sx={{
-                    mx: 'auto',
-                    mb: 2,
-                    width: 56,
-                    height: 56,
-                    background: 'linear-gradient(45deg, #6366f1, #4f46e5)',
-                  }}
-                >
-                  <StakingIcon />
-                </Avatar>
-                <Typography variant="h4" sx={{ fontWeight: 700, color: theme.palette.text.primary }}>
-                  $11,550
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Total Staked Value
-                </Typography>
-              </CardContent>
+        <Grid container spacing={4}>
+          <Grid item xs={12} lg={8}>
+            <Card sx={{ background: 'rgba(255, 255, 255, 0.95)', backdropFilter: 'blur(20px)', borderRadius: 4, p: 4, boxShadow: '0 20px 60px rgba(0, 0, 0, 0.1)', border: '1px solid rgba(255, 255, 255, 0.2)', opacity: animate ? 1 : 0, transform: animate ? 'translateY(0)' : 'translateY(30px)', transition: 'all 0.6s ease-out' }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+                <Typography variant="h5" sx={{ fontWeight: 700, color: '#1F2937' }}>Staking Dashboard</Typography>
+                <IconButton onClick={() => setShowSettings(!showSettings)} sx={{ background: 'rgba(124, 58, 237, 0.1)', '&:hover': { background: 'rgba(124, 58, 237, 0.15)' } }}>
+                  <SettingsIcon />
+                </IconButton>
+              </Box>
+
+              {showSettings && (
+                <Box sx={{ mb: 3, p: 3, borderRadius: 2, background: 'rgba(124, 58, 237, 0.05)' }}>
+                  <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>Staking Settings</Typography>
+                  <FormControlLabel control={<Switch checked={autoCompound} onChange={(e) => setAutoCompound(e.target.checked)} />} label="Auto-compound rewards" />
+                </Box>
+              )}
+
+              <Box sx={{ mb: 3 }}>
+                <Button onClick={() => setActiveTab(0)} sx={{ mr: 2, color: activeTab === 0 ? '#7C3AED' : theme.palette.text.secondary }}>Stake</Button>
+                <Button onClick={() => setActiveTab(1)} sx={{ color: activeTab === 1 ? '#7C3AED' : theme.palette.text.secondary }}>Unstake</Button>
+              </Box>
+
+              {activeTab === 0 && (
+                <Box>
+                  <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>Stake Tokens</Typography>
+                  
+                  <Box sx={{ mb: 3 }}>
+                    <Typography variant="subtitle2" sx={{ mb: 1, color: theme.palette.text.secondary, fontWeight: 600 }}>Select Token to Stake</Typography>
+                    <Button onClick={() => setShowTokenSelector(true)} sx={{ display: 'flex', alignItems: 'center', gap: 2, background: 'rgba(124, 58, 237, 0.05)', borderRadius: 2, px: 3, py: 2, border: '2px solid rgba(124, 58, 237, 0.1)', '&:hover': { background: 'rgba(124, 58, 237, 0.1)', borderColor: 'rgba(124, 58, 237, 0.2)' } }}>
+                      <Avatar sx={{ width: 32, height: 32, background: 'linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%)' }}>
+                        {selectedToken ? availableTokens.find(t => t.symbol === selectedToken)?.icon || '🪙' : '?'}
+                      </Avatar>
+                      <Typography variant="h6" sx={{ fontWeight: 700 }}>{selectedToken || 'Select Token'}</Typography>
+                    </Button>
+                  </Box>
+
+                  <Box sx={{ mb: 3 }}>
+                    <Typography variant="subtitle2" sx={{ mb: 1, color: theme.palette.text.secondary, fontWeight: 600 }}>Amount to Stake</Typography>
+                    <TextField fullWidth value={stakeAmount} onChange={(e) => setStakeAmount(e.target.value)} type="number" placeholder="0.0" InputProps={{ endAdornment: selectedToken && <Button size="small" onClick={() => setStakeAmount((userBalance[selectedToken] || 0).toString())} sx={{ color: '#7C3AED' }}>Max</Button> }} sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2, fontSize: '1.2rem', fontWeight: 600 } }} />
+                    {selectedToken && <Typography variant="body2" sx={{ color: theme.palette.text.secondary, mt: 1 }}>Available: {userBalance[selectedToken] || 0} {selectedToken}</Typography>}
+                  </Box>
+
+                  {selectedToken && (
+                    <Box sx={{ mb: 3, p: 2, borderRadius: 2, background: 'rgba(16, 185, 129, 0.05)' }}>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Typography variant="body2" sx={{ color: theme.palette.text.secondary }}>APY Rate</Typography>
+                        <Typography variant="h6" sx={{ fontWeight: 700, color: '#10B981' }}>{availableTokens.find(t => t.symbol === selectedToken)?.apy || 0}%</Typography>
+                      </Box>
+                    </Box>
+                  )}
+
+                  <Button variant="contained" fullWidth size="large" onClick={handleStake} disabled={!selectedToken || !stakeAmount} startIcon={<LockIcon />} sx={{ py: 2, fontSize: '1.1rem', fontWeight: 600, borderRadius: 3, background: 'linear-gradient(135deg, #10B981 0%, #34D399 100%)', boxShadow: '0 8px 25px rgba(16, 185, 129, 0.3)', '&:hover': { background: 'linear-gradient(135deg, #059669 0%, #10B981 100%)', transform: 'translateY(-2px)', boxShadow: '0 12px 35px rgba(16, 185, 129, 0.4)' }, '&:disabled': { background: 'rgba(0, 0, 0, 0.12)', transform: 'none', boxShadow: 'none' } }}>
+                    {!selectedToken ? 'Select Token' : `Stake ${stakeAmount || '0'} ${selectedToken}`}
+                  </Button>
+                </Box>
+              )}
+
+              {activeTab === 1 && (
+                <Box>
+                  <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>Unstake Tokens</Typography>
+                  
+                  <Box sx={{ mb: 3 }}>
+                    <Typography variant="subtitle2" sx={{ mb: 1, color: theme.palette.text.secondary, fontWeight: 600 }}>Select Token to Unstake</Typography>
+                    <Button onClick={() => setShowTokenSelector(true)} sx={{ display: 'flex', alignItems: 'center', gap: 2, background: 'rgba(239, 68, 68, 0.05)', borderRadius: 2, px: 3, py: 2, border: '2px solid rgba(239, 68, 68, 0.1)', '&:hover': { background: 'rgba(239, 68, 68, 0.1)', borderColor: 'rgba(239, 68, 68, 0.2)' } }}>
+                      <Avatar sx={{ width: 32, height: 32, background: 'linear-gradient(135deg, #EF4444 0%, #F87171 100%)' }}>
+                        {selectedToken ? availableTokens.find(t => t.symbol === selectedToken)?.icon || '🪙' : '?'}
+                      </Avatar>
+                      <Typography variant="h6" sx={{ fontWeight: 700 }}>{selectedToken || 'Select Token'}</Typography>
+                    </Button>
+                  </Box>
+
+                  <Box sx={{ mb: 3 }}>
+                    <Typography variant="subtitle2" sx={{ mb: 1, color: theme.palette.text.secondary, fontWeight: 600 }}>Amount to Unstake</Typography>
+                    <TextField fullWidth value={unstakeAmount} onChange={(e) => setUnstakeAmount(e.target.value)} type="number" placeholder="0.0" InputProps={{ endAdornment: selectedToken && <Button size="small" onClick={() => setUnstakeAmount((stakedBalance[selectedToken] || 0).toString())} sx={{ color: '#EF4444' }}>Max</Button> }} sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2, fontSize: '1.2rem', fontWeight: 600 } }} />
+                    {selectedToken && <Typography variant="body2" sx={{ color: theme.palette.text.secondary, mt: 1 }}>Staked: {stakedBalance[selectedToken] || 0} {selectedToken}</Typography>}
+                  </Box>
+
+                  <Button variant="contained" fullWidth size="large" onClick={handleUnstake} disabled={!selectedToken || !unstakeAmount} startIcon={<UnlockIcon />} sx={{ py: 2, fontSize: '1.1rem', fontWeight: 600, borderRadius: 3, background: 'linear-gradient(135deg, #EF4444 0%, #F87171 100%)', boxShadow: '0 8px 25px rgba(239, 68, 68, 0.3)', '&:hover': { background: 'linear-gradient(135deg, #DC2626 0%, #EF4444 100%)', transform: 'translateY(-2px)', boxShadow: '0 12px 35px rgba(239, 68, 68, 0.4)' }, '&:disabled': { background: 'rgba(0, 0, 0, 0.12)', transform: 'none', boxShadow: 'none' } }}>
+                    {!selectedToken ? 'Select Token' : `Unstake ${unstakeAmount || '0'} ${selectedToken}`}
+                  </Button>
+                </Box>
+              )}
             </Card>
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <Card sx={{ background: theme.palette.background.paper }}>
-              <CardContent sx={{ p: 3, textAlign: 'center' }}>
-                <Avatar
-                  sx={{
-                    mx: 'auto',
-                    mb: 2,
-                    width: 56,
-                    height: 56,
-                    background: 'linear-gradient(45deg, #10b981, #059669)',
-                  }}
-                >
-                  <RewardsIcon />
-                </Avatar>
-                <Typography variant="h4" sx={{ fontWeight: 700, color: 'success.main' }}>
-                  $545
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Total Rewards Earned
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <Card sx={{ background: theme.palette.background.paper }}>
-              <CardContent sx={{ p: 3, textAlign: 'center' }}>
-                <Avatar
-                  sx={{
-                    mx: 'auto',
-                    mb: 2,
-                    width: 56,
-                    height: 56,
-                    background: 'linear-gradient(45deg, #f59e0b, #d97706)',
-                  }}
-                >
-                  <TrendingUpIcon />
-                </Avatar>
-                <Typography variant="h4" sx={{ fontWeight: 700, color: theme.palette.text.primary }}>
-                  6.2%
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Average APY
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <Card sx={{ background: theme.palette.background.paper }}>
-              <CardContent sx={{ p: 3, textAlign: 'center' }}>
-                <Avatar
-                  sx={{
-                    mx: 'auto',
-                    mb: 2,
-                    width: 56,
-                    height: 56,
-                    background: 'linear-gradient(45deg, #ef4444, #dc2626)',
-                  }}
-                >
-                  <SecurityIcon />
-                </Avatar>
-                <Typography variant="h4" sx={{ fontWeight: 700, color: theme.palette.text.primary }}>
-                  2
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Active Stakes
-                </Typography>
-              </CardContent>
-            </Card>
+
+          <Grid item xs={12} lg={4}>
+            <Stack spacing={3}>
+              <Card sx={{ background: 'rgba(255, 255, 255, 0.95)', backdropFilter: 'blur(20px)', borderRadius: 3, p: 3, boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08)', border: '1px solid rgba(255, 255, 255, 0.2)' }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+                  <Typography variant="h6" sx={{ fontWeight: 700, color: '#1F2937' }}>Staking Pools</Typography>
+                  <Button size="small" startIcon={<AddIcon />} onClick={handleAddToken} sx={{ color: '#7C3AED' }}>Add Pool</Button>
+                </Box>
+                <Stack spacing={2}>
+                  {availableTokens.map((token) => (
+                    <Box key={token.symbol} sx={{ p: 2, borderRadius: 2, background: 'rgba(124, 58, 237, 0.05)', transition: 'all 0.3s ease', '&:hover': { background: 'rgba(124, 58, 237, 0.1)' } }}>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                          <Avatar sx={{ width: 32, height: 32, background: 'linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%)' }}>{token.icon}</Avatar>
+                          <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>{token.symbol}</Typography>
+                        </Box>
+                        <IconButton size="small" onClick={() => handleSetAPY(token.symbol)} sx={{ color: theme.palette.text.secondary }}>
+                          <SettingsIcon fontSize="small" />
+                        </IconButton>
+                      </Box>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Typography variant="body2" sx={{ color: theme.palette.text.secondary }}>APY: {token.apy}%</Typography>
+                        <Typography variant="body2" sx={{ color: theme.palette.text.secondary }}>Staked: {stakedBalance[token.symbol] || 0}</Typography>
+                      </Box>
+                      <Button size="small" onClick={() => handleSetBalance(token.symbol)} sx={{ color: '#7C3AED', fontSize: '0.75rem', mt: 1 }}>Set Balance</Button>
+                    </Box>
+                  ))}
+                </Stack>
+              </Card>
+
+              <Card sx={{ background: 'rgba(255, 255, 255, 0.95)', backdropFilter: 'blur(20px)', borderRadius: 3, p: 3, boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08)', border: '1px solid rgba(255, 255, 255, 0.2)' }}>
+                <Typography variant="h6" sx={{ mb: 3, fontWeight: 700, color: '#1F2937' }}>Staking History</Typography>
+                <Stack spacing={2}>
+                  {stakingHistory.slice(0, 5).map((stake) => (
+                    <Box key={stake.id} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', p: 2, borderRadius: 2, background: 'rgba(0, 0, 0, 0.02)' }}>
+                      <Box>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>{stake.amount} {stake.token}</Typography>
+                        <Typography variant="caption" sx={{ color: theme.palette.text.secondary }}>{new Date(stake.timestamp).toLocaleString()}</Typography>
+                      </Box>
+                      <Chip label={stake.status} size="small" sx={{ background: stake.status === 'active' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(124, 58, 237, 0.1)', color: stake.status === 'active' ? '#10B981' : '#7C3AED' }} />
+                    </Box>
+                  ))}
+                  {stakingHistory.length === 0 && (
+                    <Typography variant="body2" sx={{ color: theme.palette.text.secondary, textAlign: 'center', py: 2 }}>No staking history yet. Start staking to see your activity.</Typography>
+                  )}
+                </Stack>
+              </Card>
+            </Stack>
           </Grid>
         </Grid>
-
-        {/* Tabs */}
-        <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 4 }}>
-          <Tabs
-            value={activeTab}
-            onChange={(e, newValue) => setActiveTab(newValue)}
-            sx={{
-              '& .MuiTab-root': {
-                color: theme.palette.text.secondary,
-                fontWeight: 600,
-                '&.Mui-selected': {
-                  color: theme.palette.primary.main,
-                },
-              },
-            }}
-          >
-            <Tab label="Available Pools" />
-            <Tab label="My Stakes" />
-          </Tabs>
-        </Box>
-
-        {/* Tab Content */}
-        {activeTab === 0 && (
-          <Grid container spacing={3}>
-            {stakingPools.map((pool) => (
-              <Grid item xs={12} md={6} lg={4} key={pool.id}>
-                <StakingPoolCard pool={pool} />
-              </Grid>
-            ))}
-          </Grid>
-        )}
-
-        {activeTab === 1 && (
-          <Grid container spacing={3}>
-            {userStakes.map((stake) => (
-              <Grid item xs={12} md={6} key={stake.id}>
-                <UserStakeCard stake={stake} />
-              </Grid>
-            ))}
-          </Grid>
-        )}
       </Container>
+
+      <Dialog open={showTokenSelector} onClose={() => setShowTokenSelector(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>Select Token</DialogTitle>
+        <DialogContent>
+          <Stack spacing={2} sx={{ mt: 2 }}>
+            {availableTokens.map((token) => (
+              <Button key={token.symbol} onClick={() => handleTokenSelect(token.symbol)} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', p: 2, borderRadius: 2, background: 'rgba(124, 58, 237, 0.05)', '&:hover': { background: 'rgba(124, 58, 237, 0.1)' } }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <Avatar sx={{ width: 32, height: 32, background: 'linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%)' }}>{token.icon}</Avatar>
+                  <Box>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>{token.symbol}</Typography>
+                    <Typography variant="caption" sx={{ color: theme.palette.text.secondary }}>APY: {token.apy}%</Typography>
+                  </Box>
+                </Box>
+                <Typography variant="body2" sx={{ color: theme.palette.text.secondary }}>Staked: {stakedBalance[token.symbol] || 0}</Typography>
+              </Button>
+            ))}
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowTokenSelector(false)}>Cancel</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   )
 }
