@@ -46,6 +46,15 @@ export default function StakePage() {
   const [stakedBalance, setStakedBalance] = useState<{[key: string]: number}>({})
   const [stakingHistory, setStakingHistory] = useState<any[]>([])
   const [autoCompound, setAutoCompound] = useState(false)
+  const [lockPeriod, setLockPeriod] = useState(30)
+  const [stakingRewards, setStakingRewards] = useState<{[key: string]: number}>({})
+  const [showRewards, setShowRewards] = useState(false)
+  const [stakingPools, setStakingPools] = useState<any[]>([])
+  const [showAddPool, setShowAddPool] = useState(false)
+  const [newPool, setNewPool] = useState({ name: '', apy: '', minStake: '', maxStake: '', lockPeriod: '' })
+  const [stakingStats, setStakingStats] = useState({ totalStaked: 0, totalRewards: 0, activePools: 0 })
+  const [showAnalytics, setShowAnalytics] = useState(false)
+  const [harvestAll, setHarvestAll] = useState(false)
 
   useEffect(() => {
     setAnimate(true)
@@ -145,6 +154,99 @@ export default function StakePage() {
     setSelectedToken(token)
     setShowTokenSelector(false)
   }
+
+  const handleHarvestRewards = (token: string) => {
+    const rewards = stakingRewards[token] || 0
+    if (rewards <= 0) {
+      alert('No rewards to harvest')
+      return
+    }
+
+    const newHarvest = {
+      id: Date.now(),
+      token,
+      amount: rewards,
+      timestamp: new Date().toISOString(),
+      status: 'harvested'
+    }
+
+    setStakingHistory([newHarvest, ...stakingHistory])
+    setStakingRewards(prev => ({ ...prev, [token]: 0 }))
+    setUserBalance(prev => ({ ...prev, [token]: (prev[token] || 0) + rewards }))
+    alert(`Successfully harvested ${rewards} ${token} rewards!`)
+  }
+
+  const handleHarvestAllRewards = () => {
+    const totalRewards = Object.values(stakingRewards).reduce((sum, reward) => sum + reward, 0)
+    if (totalRewards <= 0) {
+      alert('No rewards to harvest')
+      return
+    }
+
+    Object.keys(stakingRewards).forEach(token => {
+      const rewards = stakingRewards[token]
+      if (rewards > 0) {
+        setUserBalance(prev => ({ ...prev, [token]: (prev[token] || 0) + rewards }))
+      }
+    })
+
+    setStakingRewards({})
+    alert(`Successfully harvested ${totalRewards} total rewards!`)
+  }
+
+  const handleAddStakingPool = () => {
+    if (!newPool.name || !newPool.apy || !newPool.minStake || !newPool.maxStake || !newPool.lockPeriod) {
+      alert('Please fill in all fields')
+      return
+    }
+
+    const pool = {
+      id: Date.now(),
+      name: newPool.name,
+      apy: parseFloat(newPool.apy),
+      minStake: parseFloat(newPool.minStake),
+      maxStake: parseFloat(newPool.maxStake),
+      lockPeriod: parseInt(newPool.lockPeriod),
+      totalStaked: 0,
+      participants: 0,
+      status: 'active'
+    }
+
+    setStakingPools([...stakingPools, pool])
+    setNewPool({ name: '', apy: '', minStake: '', maxStake: '', lockPeriod: '' })
+    setShowAddPool(false)
+    alert('Staking pool created successfully!')
+  }
+
+  const calculateRewards = (token: string, amount: number) => {
+    const tokenData = availableTokens.find(t => t.symbol === token)
+    if (!tokenData) return 0
+    return (amount * tokenData.apy) / 100
+  }
+
+  const getTotalStakedValue = () => {
+    return Object.entries(stakedBalance).reduce((total, [token, amount]) => {
+      return total + amount
+    }, 0)
+  }
+
+  const getTotalRewards = () => {
+    return Object.entries(stakedBalance).reduce((total, [token, amount]) => {
+      return total + calculateRewards(token, amount)
+    }, 0)
+  }
+
+  const updateStakingStats = () => {
+    setStakingStats({
+      totalStaked: getTotalStakedValue(),
+      totalRewards: getTotalRewards(),
+      activePools: stakingPools.length
+    })
+  }
+
+  useEffect(() => {
+    updateStakingStats()
+  }, [stakedBalance, stakingPools])
 
   return (
     <Box sx={{ minHeight: '100vh', background: 'linear-gradient(135deg, #FAFAFA 0%, #F3F4F6 100%)' }}>

@@ -49,6 +49,17 @@ export default function FarmPage() {
   const [farmedBalance, setFarmedBalance] = useState<{[key: string]: number}>({})
   const [farmingHistory, setFarmingHistory] = useState<any[]>([])
   const [autoCompound, setAutoCompound] = useState(false)
+  const [farmingRewards, setFarmingRewards] = useState<{[key: string]: number}>({})
+  const [showRewards, setShowRewards] = useState(false)
+  const [farmingStats, setFarmingStats] = useState({ totalFarmed: 0, totalRewards: 0, activePools: 0 })
+  const [showAnalytics, setShowAnalytics] = useState(false)
+  const [harvestAll, setHarvestAll] = useState(false)
+  const [impermanentLoss, setImpermanentLoss] = useState<{[key: string]: number}>({})
+  const [showILCalculator, setShowILCalculator] = useState(false)
+  const [ilCalculator, setIlCalculator] = useState({ token1Price: '', token2Price: '', token1Amount: '', token2Amount: '' })
+  const [farmingStrategies, setFarmingStrategies] = useState<any[]>([])
+  const [showStrategy, setShowStrategy] = useState(false)
+  const [newStrategy, setNewStrategy] = useState({ name: '', description: '', risk: 'low', expectedAPR: '' })
 
   useEffect(() => {
     setAnimate(true)

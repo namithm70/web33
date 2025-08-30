@@ -54,6 +54,19 @@ export default function PortfolioPage() {
   const [totalValue, setTotalValue] = useState(0)
   const [totalChange, setTotalChange] = useState(0)
   const [activeTab, setActiveTab] = useState(0)
+  const [portfolioPerformance, setPortfolioPerformance] = useState<any[]>([])
+  const [showPerformance, setShowPerformance] = useState(false)
+  const [portfolioAlerts, setPortfolioAlerts] = useState<any[]>([])
+  const [showAlerts, setShowAlerts] = useState(false)
+  const [newAlert, setNewAlert] = useState({ type: 'value', condition: 'above', value: '', message: '' })
+  const [portfolioGoals, setPortfolioGoals] = useState<any[]>([])
+  const [showGoals, setShowGoals] = useState(false)
+  const [newGoal, setNewGoal] = useState({ name: '', targetValue: '', targetDate: '', currentValue: '' })
+  const [riskAnalysis, setRiskAnalysis] = useState({ riskScore: 0, volatility: 0, sharpeRatio: 0 })
+  const [showRiskAnalysis, setShowRiskAnalysis] = useState(false)
+  const [portfolioComparison, setPortfolioComparison] = useState<any[]>([])
+  const [showComparison, setShowComparison] = useState(false)
+  const [benchmarkIndex, setBenchmarkIndex] = useState('SPY')
 
   useEffect(() => {
     setAnimate(true)
@@ -147,6 +160,103 @@ export default function PortfolioPage() {
       ...asset,
       percentage: total > 0 ? ((asset.amount * asset.price) / total) * 100 : 0
     }))
+  }
+
+  const handleAddPortfolioAlert = () => {
+    if (!newAlert.value || !newAlert.message) {
+      alert('Please fill in all fields')
+      return
+    }
+
+    const portfolioAlert = {
+      id: Date.now(),
+      type: newAlert.type,
+      condition: newAlert.condition,
+      value: parseFloat(newAlert.value),
+      message: newAlert.message,
+      timestamp: new Date().toISOString(),
+      status: 'active'
+    }
+
+    setPortfolioAlerts([...portfolioAlerts, portfolioAlert])
+    setNewAlert({ type: 'value', condition: 'above', value: '', message: '' })
+    setShowAlerts(false)
+    alert('Portfolio alert added successfully!')
+  }
+
+  const handleAddPortfolioGoal = () => {
+    if (!newGoal.name || !newGoal.targetValue || !newGoal.targetDate) {
+      alert('Please fill in all fields')
+      return
+    }
+
+    const goal = {
+      id: Date.now(),
+      name: newGoal.name,
+      targetValue: parseFloat(newGoal.targetValue),
+      targetDate: newGoal.targetDate,
+      currentValue: totalValue,
+      progress: (totalValue / parseFloat(newGoal.targetValue)) * 100,
+      timestamp: new Date().toISOString()
+    }
+
+    setPortfolioGoals([...portfolioGoals, goal])
+    setNewGoal({ name: '', targetValue: '', targetDate: '', currentValue: '' })
+    setShowGoals(false)
+    alert('Portfolio goal added successfully!')
+  }
+
+  const calculateRiskAnalysis = () => {
+    if (portfolioAssets.length === 0) return
+
+    // Calculate volatility (simplified)
+    const returns = portfolioAssets.map(asset => asset.change || 0)
+    const avgReturn = returns.reduce((sum, ret) => sum + ret, 0) / returns.length
+    const variance = returns.reduce((sum, ret) => sum + Math.pow(ret - avgReturn, 2), 0) / returns.length
+    const volatility = Math.sqrt(variance)
+
+    // Calculate risk score (0-100)
+    const riskScore = Math.min(100, Math.max(0, volatility * 10))
+
+    // Calculate Sharpe ratio (simplified)
+    const riskFreeRate = 2 // Assuming 2% risk-free rate
+    const sharpeRatio = (avgReturn - riskFreeRate) / volatility
+
+    setRiskAnalysis({
+      riskScore: Math.round(riskScore),
+      volatility: Math.round(volatility * 100) / 100,
+      sharpeRatio: Math.round(sharpeRatio * 100) / 100
+    })
+  }
+
+  const updatePortfolioPerformance = () => {
+    const performance = {
+      date: new Date().toISOString(),
+      value: totalValue,
+      change: totalChange,
+      assets: portfolioAssets.length
+    }
+    setPortfolioPerformance([performance, ...portfolioPerformance.slice(0, 29)]) // Keep last 30 entries
+  }
+
+  useEffect(() => {
+    calculateRiskAnalysis()
+    updatePortfolioPerformance()
+  }, [portfolioAssets, totalValue, totalChange])
+
+  const getGoalProgress = (goal: any) => {
+    return Math.min(100, (totalValue / goal.targetValue) * 100)
+  }
+
+  const getBenchmarkComparison = () => {
+    // Simulated benchmark data
+    const benchmarkReturn = 8.5 // 8.5% annual return
+    const portfolioReturn = totalChange > 0 ? (totalChange / totalValue) * 100 : 0
+    return {
+      portfolio: portfolioReturn,
+      benchmark: benchmarkReturn,
+      outperformance: portfolioReturn - benchmarkReturn
+    }
   }
 
   return (

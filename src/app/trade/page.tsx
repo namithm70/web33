@@ -38,6 +38,12 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Badge,
+  Tooltip,
+  LinearProgress,
 } from '@mui/material'
 import {
   SwapHoriz as SwapIcon,
@@ -55,6 +61,16 @@ import {
   Star as StarIcon,
   Favorite as FavoriteIcon,
   Share as ShareIcon,
+  Notifications as NotificationsIcon,
+  Timeline as TimelineIcon,
+  Speed as SpeedIcon,
+  Security as SecurityIcon,
+  ExpandMore as ExpandMoreIcon,
+  LocalOffer as LocalOfferIcon,
+  AccountBalance as AccountBalanceIcon,
+  ShowChart as ShowChartIcon,
+  AutoMode as AutoModeIcon,
+  Schedule as ScheduleIcon,
 } from '@mui/icons-material'
 import Header from '../../components/Header'
 
@@ -74,6 +90,18 @@ export default function TradePage() {
   const [userBalance, setUserBalance] = useState<{[key: string]: number}>({})
   const [favoriteTokens, setFavoriteTokens] = useState<string[]>([])
   const [tradeHistory, setTradeHistory] = useState<any[]>([])
+  const [showAdvanced, setShowAdvanced] = useState(false)
+  const [orderType, setOrderType] = useState<'market' | 'limit' | 'stop'>('market')
+  const [limitPrice, setLimitPrice] = useState('')
+  const [stopPrice, setStopPrice] = useState('')
+  const [priceAlerts, setPriceAlerts] = useState<any[]>([])
+  const [showPriceAlert, setShowPriceAlert] = useState(false)
+  const [newAlert, setNewAlert] = useState({ token: '', targetPrice: '', condition: 'above' })
+  const [gasPrice, setGasPrice] = useState('auto')
+  const [autoSlippage, setAutoSlippage] = useState(true)
+  const [showChart, setShowChart] = useState(false)
+  const [tradingPairs, setTradingPairs] = useState<any[]>([])
+  const [selectedPair, setSelectedPair] = useState('')
 
   useEffect(() => {
     setAnimate(true)
@@ -81,11 +109,11 @@ export default function TradePage() {
 
   // Available tokens - user can add more
   const [availableTokens, setAvailableTokens] = useState([
-    { symbol: 'ETH', name: 'Ethereum', icon: '🔵', price: 0, change: 0 },
-    { symbol: 'USDC', name: 'USD Coin', icon: '🔵', price: 0, change: 0 },
-    { symbol: 'USDT', name: 'Tether', icon: '🟢', price: 0, change: 0 },
-    { symbol: 'DAI', name: 'Dai', icon: '🟡', price: 0, change: 0 },
-    { symbol: 'WBTC', name: 'Wrapped Bitcoin', icon: '🟠', price: 0, change: 0 },
+    { symbol: 'ETH', name: 'Ethereum', icon: '🔵', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'USDC', name: 'USD Coin', icon: '🔵', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'USDT', name: 'Tether', icon: '🟢', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'DAI', name: 'Dai', icon: '🟡', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'WBTC', name: 'Wrapped Bitcoin', icon: '🟠', price: 0, change: 0, volume: 0, marketCap: 0 },
   ])
 
   const handleSwap = () => {
@@ -100,6 +128,11 @@ export default function TradePage() {
       toToken,
       fromAmount: parseFloat(fromAmount),
       toAmount: parseFloat(toAmount),
+      orderType,
+      limitPrice: orderType === 'limit' ? parseFloat(limitPrice) : null,
+      stopPrice: orderType === 'stop' ? parseFloat(stopPrice) : null,
+      slippage,
+      gasPrice,
       timestamp: new Date().toISOString(),
       status: 'completed'
     }
@@ -136,7 +169,9 @@ export default function TradePage() {
         name: newToken.toUpperCase(),
         icon: '🪙',
         price: 0,
-        change: 0
+        change: 0,
+        volume: 0,
+        marketCap: 0
       }
       setAvailableTokens([...availableTokens, newTokenData])
     }
@@ -184,6 +219,61 @@ export default function TradePage() {
     setShowTokenSelector(true)
   }
 
+  const handleAddPriceAlert = () => {
+    if (!newAlert.token || !newAlert.targetPrice) {
+      alert('Please fill in all fields')
+      return
+    }
+
+    const alert = {
+      id: Date.now(),
+      token: newAlert.token,
+      targetPrice: parseFloat(newAlert.targetPrice),
+      condition: newAlert.condition,
+      timestamp: new Date().toISOString(),
+      status: 'active'
+    }
+
+    setPriceAlerts([...priceAlerts, alert])
+    setNewAlert({ token: '', targetPrice: '', condition: 'above' })
+    setShowPriceAlert(false)
+    alert('Price alert added successfully!')
+  }
+
+  const handleRemovePriceAlert = (id: number) => {
+    setPriceAlerts(priceAlerts.filter(alert => alert.id !== id))
+  }
+
+  const handleAddTradingPair = () => {
+    const token1 = prompt('Enter first token symbol:')
+    if (!token1) return
+    
+    const token2 = prompt('Enter second token symbol:')
+    if (!token2) return
+
+    const pair = {
+      id: `${token1.toUpperCase()}-${token2.toUpperCase()}`,
+      token1: token1.toUpperCase(),
+      token2: token2.toUpperCase(),
+      volume: 0,
+      change: 0
+    }
+
+    setTradingPairs([...tradingPairs, pair])
+  }
+
+  const getTopGainers = () => {
+    return [...availableTokens].sort((a, b) => b.change - a.change).slice(0, 5)
+  }
+
+  const getTopLosers = () => {
+    return [...availableTokens].sort((a, b) => a.change - b.change).slice(0, 5)
+  }
+
+  const getTotalVolume = () => {
+    return availableTokens.reduce((total, token) => total + token.volume, 0)
+  }
+
   return (
     <Box sx={{ minHeight: '100vh', background: 'linear-gradient(135deg, #FAFAFA 0%, #F3F4F6 100%)' }}>
       <Header />
@@ -201,10 +291,10 @@ export default function TradePage() {
               WebkitTextFillColor: 'transparent',
             }}
           >
-            Trade Tokens
+            Advanced Trading
           </Typography>
           <Typography variant="h5" sx={{ color: theme.palette.text.secondary, maxWidth: 600, mx: 'auto' }}>
-            Swap tokens with your own data and preferences
+            Professional trading with limit orders, stop-loss, price alerts, and advanced features
           </Typography>
         </Box>
 
@@ -226,55 +316,131 @@ export default function TradePage() {
               {/* Header */}
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
                 <Typography variant="h5" sx={{ fontWeight: 700, color: '#1F2937' }}>
-                  Swap Tokens
+                  Advanced Swap
                 </Typography>
-                <IconButton
-                  onClick={() => setShowSettings(!showSettings)}
-                  sx={{
-                    background: 'rgba(124, 58, 237, 0.1)',
-                    '&:hover': { background: 'rgba(124, 58, 237, 0.15)' }
-                  }}
-                >
-                  <SettingsIcon />
-                </IconButton>
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                  <IconButton
+                    onClick={() => setShowChart(!showChart)}
+                    sx={{
+                      background: 'rgba(124, 58, 237, 0.1)',
+                      '&:hover': { background: 'rgba(124, 58, 237, 0.15)' }
+                    }}
+                  >
+                    <ShowChartIcon />
+                  </IconButton>
+                  <IconButton
+                    onClick={() => setShowSettings(!showSettings)}
+                    sx={{
+                      background: 'rgba(124, 58, 237, 0.1)',
+                      '&:hover': { background: 'rgba(124, 58, 237, 0.15)' }
+                    }}
+                  >
+                    <SettingsIcon />
+                  </IconButton>
+                </Box>
               </Box>
 
-              {/* Settings Panel */}
+              {/* Order Type Selection */}
+              <Box sx={{ mb: 3 }}>
+                <Typography variant="subtitle2" sx={{ mb: 1, color: theme.palette.text.secondary, fontWeight: 600 }}>
+                  Order Type
+                </Typography>
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                  <Button
+                    variant={orderType === 'market' ? 'contained' : 'outlined'}
+                    size="small"
+                    onClick={() => setOrderType('market')}
+                    sx={{ flex: 1 }}
+                  >
+                    Market
+                  </Button>
+                  <Button
+                    variant={orderType === 'limit' ? 'contained' : 'outlined'}
+                    size="small"
+                    onClick={() => setOrderType('limit')}
+                    sx={{ flex: 1 }}
+                  >
+                    Limit
+                  </Button>
+                  <Button
+                    variant={orderType === 'stop' ? 'contained' : 'outlined'}
+                    size="small"
+                    onClick={() => setOrderType('stop')}
+                    sx={{ flex: 1 }}
+                  >
+                    Stop
+                  </Button>
+                </Box>
+              </Box>
+
+              {/* Advanced Settings */}
               {showSettings && (
-                <Box sx={{ mb: 3, p: 3, borderRadius: 2, background: 'rgba(124, 58, 237, 0.05)' }}>
-                  <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
-                    Transaction Settings
-                  </Typography>
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={slippage === 0.5}
-                        onChange={(e) => setSlippage(e.target.checked ? 0.5 : 1.0)}
-                        sx={{
-                          '& .MuiSwitch-switchBase.Mui-checked': {
-                            color: '#7C3AED',
-                          },
-                          '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-                            backgroundColor: '#7C3AED',
-                          },
-                        }}
-                      />
-                    }
-                    label={`Slippage Tolerance: ${slippage}%`}
-                  />
-                  <Box sx={{ mt: 2 }}>
-                    <Typography variant="body2" sx={{ mb: 1 }}>
-                      Custom Slippage: {slippage}%
+                <Accordion sx={{ mb: 3, background: 'rgba(124, 58, 237, 0.05)' }}>
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                      Advanced Settings
                     </Typography>
-                    <Slider
-                      value={slippage}
-                      onChange={(_, value) => setSlippage(value as number)}
-                      min={0.1}
-                      max={5}
-                      step={0.1}
-                      sx={{ color: '#7C3AED' }}
-                    />
-                  </Box>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Stack spacing={3}>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={autoSlippage}
+                            onChange={(e) => setAutoSlippage(e.target.checked)}
+                          />
+                        }
+                        label="Auto Slippage"
+                      />
+                      
+                      {!autoSlippage && (
+                        <Box>
+                          <Typography variant="body2" sx={{ mb: 1 }}>
+                            Custom Slippage: {slippage}%
+                          </Typography>
+                          <Slider
+                            value={slippage}
+                            onChange={(_, value) => setSlippage(value as number)}
+                            min={0.1}
+                            max={5}
+                            step={0.1}
+                            sx={{ color: '#7C3AED' }}
+                          />
+                        </Box>
+                      )}
+
+                      <FormControl fullWidth>
+                        <InputLabel>Gas Price</InputLabel>
+                        <Select
+                          value={gasPrice}
+                          onChange={(e) => setGasPrice(e.target.value)}
+                          label="Gas Price"
+                        >
+                          <MenuItem value="auto">Auto</MenuItem>
+                          <MenuItem value="slow">Slow</MenuItem>
+                          <MenuItem value="medium">Medium</MenuItem>
+                          <MenuItem value="fast">Fast</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Stack>
+                  </AccordionDetails>
+                </Accordion>
+              )}
+
+              {/* Limit/Stop Price Inputs */}
+              {(orderType === 'limit' || orderType === 'stop') && (
+                <Box sx={{ mb: 3 }}>
+                  <Typography variant="subtitle2" sx={{ mb: 1, color: theme.palette.text.secondary, fontWeight: 600 }}>
+                    {orderType === 'limit' ? 'Limit Price' : 'Stop Price'}
+                  </Typography>
+                  <TextField
+                    fullWidth
+                    type="number"
+                    placeholder="0.00"
+                    value={orderType === 'limit' ? limitPrice : stopPrice}
+                    onChange={(e) => orderType === 'limit' ? setLimitPrice(e.target.value) : setStopPrice(e.target.value)}
+                    sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+                  />
                 </Box>
               )}
 
@@ -493,7 +659,7 @@ export default function TradePage() {
                   }
                 }}
               >
-                {!fromToken || !toToken ? 'Select Tokens' : `Swap ${fromToken} for ${toToken}`}
+                {!fromToken || !toToken ? 'Select Tokens' : `${orderType.charAt(0).toUpperCase() + orderType.slice(1)} ${fromToken} for ${toToken}`}
               </Button>
             </Card>
           </Grid>
@@ -501,7 +667,7 @@ export default function TradePage() {
           {/* Sidebar */}
           <Grid item xs={12} md={4}>
             <Stack spacing={3}>
-              {/* Token Management */}
+              {/* Market Overview */}
               <Card
                 sx={{
                   background: 'rgba(255, 255, 255, 0.95)',
@@ -514,21 +680,143 @@ export default function TradePage() {
               >
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
                   <Typography variant="h6" sx={{ fontWeight: 700, color: '#1F2937' }}>
-                    Your Tokens
+                    Market Overview
+                  </Typography>
+                  <IconButton size="small" onClick={() => window.location.reload()}>
+                    <RefreshIcon />
+                  </IconButton>
+                </Box>
+                
+                <Box sx={{ mb: 3 }}>
+                  <Typography variant="h4" sx={{ fontWeight: 800, color: '#10B981', mb: 1 }}>
+                    ${getTotalVolume().toFixed(2)}M
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: theme.palette.text.secondary }}>
+                    24h Total Volume
+                  </Typography>
+                </Box>
+
+                <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600 }}>Top Gainers</Typography>
+                <Stack spacing={1} sx={{ mb: 3 }}>
+                  {getTopGainers().map((token) => (
+                    <Box key={token.symbol} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Avatar sx={{ width: 20, height: 20, fontSize: '0.75rem' }}>{token.icon}</Avatar>
+                        <Typography variant="body2" sx={{ fontWeight: 600 }}>{token.symbol}</Typography>
+                      </Box>
+                      <Typography variant="body2" sx={{ color: '#10B981', fontWeight: 600 }}>
+                        +{token.change.toFixed(2)}%
+                      </Typography>
+                    </Box>
+                  ))}
+                </Stack>
+
+                <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600 }}>Top Losers</Typography>
+                <Stack spacing={1}>
+                  {getTopLosers().map((token) => (
+                    <Box key={token.symbol} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Avatar sx={{ width: 20, height: 20, fontSize: '0.75rem' }}>{token.icon}</Avatar>
+                        <Typography variant="body2" sx={{ fontWeight: 600 }}>{token.symbol}</Typography>
+                      </Box>
+                      <Typography variant="body2" sx={{ color: '#EF4444', fontWeight: 600 }}>
+                        {token.change.toFixed(2)}%
+                      </Typography>
+                    </Box>
+                  ))}
+                </Stack>
+              </Card>
+
+              {/* Price Alerts */}
+              <Card
+                sx={{
+                  background: 'rgba(255, 255, 255, 0.95)',
+                  backdropFilter: 'blur(20px)',
+                  borderRadius: 3,
+                  p: 3,
+                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                }}
+              >
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+                  <Typography variant="h6" sx={{ fontWeight: 700, color: '#1F2937' }}>
+                    Price Alerts
                   </Typography>
                   <Button
                     size="small"
                     startIcon={<AddIcon />}
-                    onClick={handleAddToken}
+                    onClick={() => setShowPriceAlert(true)}
                     sx={{ color: '#7C3AED' }}
                   >
-                    Add Token
+                    Add Alert
                   </Button>
                 </Box>
                 <Stack spacing={2}>
-                  {Object.entries(userBalance).map(([token, balance]) => (
+                  {priceAlerts.slice(0, 5).map((alert) => (
                     <Box
-                      key={token}
+                      key={alert.id}
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        p: 2,
+                        borderRadius: 2,
+                        background: 'rgba(0, 0, 0, 0.02)',
+                      }}
+                    >
+                      <Box>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                          {alert.token} {alert.condition} ${alert.targetPrice}
+                        </Typography>
+                        <Typography variant="caption" sx={{ color: theme.palette.text.secondary }}>
+                          {new Date(alert.timestamp).toLocaleString()}
+                        </Typography>
+                      </Box>
+                      <IconButton
+                        size="small"
+                        onClick={() => handleRemovePriceAlert(alert.id)}
+                        sx={{ color: '#EF4444' }}
+                      >
+                        <RemoveIcon fontSize="small" />
+                      </IconButton>
+                    </Box>
+                  ))}
+                  {priceAlerts.length === 0 && (
+                    <Typography variant="body2" sx={{ color: theme.palette.text.secondary, textAlign: 'center', py: 2 }}>
+                      No price alerts. Add alerts to monitor token prices.
+                    </Typography>
+                  )}
+                </Stack>
+              </Card>
+
+              {/* Trading Pairs */}
+              <Card
+                sx={{
+                  background: 'rgba(255, 255, 255, 0.95)',
+                  backdropFilter: 'blur(20px)',
+                  borderRadius: 3,
+                  p: 3,
+                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                }}
+              >
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+                  <Typography variant="h6" sx={{ fontWeight: 700, color: '#1F2937' }}>
+                    Trading Pairs
+                  </Typography>
+                  <Button
+                    size="small"
+                    startIcon={<AddIcon />}
+                    onClick={handleAddTradingPair}
+                    sx={{ color: '#7C3AED' }}
+                  >
+                    Add Pair
+                  </Button>
+                </Box>
+                <Stack spacing={2}>
+                  {tradingPairs.map((pair) => (
+                    <Box
+                      key={pair.id}
                       sx={{
                         display: 'flex',
                         justifyContent: 'space-between',
@@ -536,37 +824,28 @@ export default function TradePage() {
                         p: 2,
                         borderRadius: 2,
                         background: 'rgba(124, 58, 237, 0.05)',
+                        cursor: 'pointer',
                         transition: 'all 0.3s ease',
                         '&:hover': {
                           background: 'rgba(124, 58, 237, 0.1)',
                         }
                       }}
+                      onClick={() => {
+                        setFromToken(pair.token1)
+                        setToToken(pair.token2)
+                      }}
                     >
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <Avatar sx={{ width: 32, height: 32, background: 'linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%)' }}>
-                          {availableTokens.find(t => t.symbol === token)?.icon || '🪙'}
-                        </Avatar>
-                        <Box>
-                          <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                            {token}
-                          </Typography>
-                          <Typography variant="caption" sx={{ color: theme.palette.text.secondary }}>
-                            {balance.toFixed(4)}
-                          </Typography>
-                        </Box>
-                      </Box>
-                      <IconButton
-                        size="small"
-                        onClick={() => toggleFavorite(token)}
-                        sx={{ color: favoriteTokens.includes(token) ? '#F59E0B' : theme.palette.text.secondary }}
-                      >
-                        <StarIcon />
-                      </IconButton>
+                      <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                        {pair.token1}/{pair.token2}
+                      </Typography>
+                      <Typography variant="body2" sx={{ color: theme.palette.text.secondary }}>
+                        Vol: ${pair.volume.toFixed(2)}M
+                      </Typography>
                     </Box>
                   ))}
-                  {Object.keys(userBalance).length === 0 && (
+                  {tradingPairs.length === 0 && (
                     <Typography variant="body2" sx={{ color: theme.palette.text.secondary, textAlign: 'center', py: 2 }}>
-                      No tokens added yet. Set your balances to get started.
+                      No trading pairs. Add pairs to quick trade.
                     </Typography>
                   )}
                 </Stack>
@@ -607,12 +886,19 @@ export default function TradePage() {
                           {new Date(trade.timestamp).toLocaleString()}
                         </Typography>
                       </Box>
-                      <CheckCircleIcon sx={{ color: '#10B981', fontSize: 20 }} />
+                      <Chip
+                        label={trade.orderType}
+                        size="small"
+                        sx={{
+                          background: 'rgba(124, 58, 237, 0.1)',
+                          color: '#7C3AED',
+                        }}
+                      />
                     </Box>
                   ))}
                   {tradeHistory.length === 0 && (
                     <Typography variant="body2" sx={{ color: theme.palette.text.secondary, textAlign: 'center', py: 2 }}>
-                      No trades yet. Start swapping to see your history.
+                      No trades yet. Start trading to see your history.
                     </Typography>
                   )}
                 </Stack>
@@ -654,7 +940,7 @@ export default function TradePage() {
                       {token.symbol}
                     </Typography>
                     <Typography variant="caption" sx={{ color: theme.palette.text.secondary }}>
-                      {token.name}
+                      ${token.price} ({token.change > 0 ? '+' : ''}{token.change}%)
                     </Typography>
                   </Box>
                 </Box>
@@ -667,6 +953,56 @@ export default function TradePage() {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setShowTokenSelector(false)}>Cancel</Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Price Alert Dialog */}
+      <Dialog open={showPriceAlert} onClose={() => setShowPriceAlert(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>Add Price Alert</DialogTitle>
+        <DialogContent>
+          <Stack spacing={3} sx={{ mt: 2 }}>
+            <FormControl fullWidth>
+              <InputLabel>Token</InputLabel>
+              <Select
+                value={newAlert.token}
+                onChange={(e) => setNewAlert({ ...newAlert, token: e.target.value })}
+                label="Token"
+              >
+                {availableTokens.map((token) => (
+                  <MenuItem key={token.symbol} value={token.symbol}>
+                    {token.symbol}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            
+            <TextField
+              fullWidth
+              label="Target Price"
+              type="number"
+              value={newAlert.targetPrice}
+              onChange={(e) => setNewAlert({ ...newAlert, targetPrice: e.target.value })}
+              placeholder="0.00"
+            />
+            
+            <FormControl fullWidth>
+              <InputLabel>Condition</InputLabel>
+              <Select
+                value={newAlert.condition}
+                onChange={(e) => setNewAlert({ ...newAlert, condition: e.target.value })}
+                label="Condition"
+              >
+                <MenuItem value="above">Above</MenuItem>
+                <MenuItem value="below">Below</MenuItem>
+              </Select>
+            </FormControl>
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowPriceAlert(false)}>Cancel</Button>
+          <Button onClick={handleAddPriceAlert} variant="contained" sx={{ background: 'linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%)' }}>
+            Add Alert
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>
