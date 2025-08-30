@@ -38,7 +38,7 @@ import {
   TrendingUp as TrendingUpIcon,
   TrendingDown as TrendingDownIcon,
 } from '@mui/icons-material'
-import { useAppTheme } from './ClientThemeProvider'
+
 
 const features = [
   {
@@ -112,7 +112,6 @@ const stats = [
 
 function Header() {
   const theme = useTheme()
-  const { mode, toggleTheme } = useAppTheme()
   const [mobileOpen, setMobileOpen] = useState(false)
   const isMobile = useMediaQuery(theme.breakpoints.down('md'))
   const router = useRouter()
@@ -182,22 +181,7 @@ function Header() {
         {/* Right side controls */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           {/* Theme Toggle */}
-          <IconButton
-            onClick={toggleTheme}
-            sx={{ 
-              color: theme.palette.text.primary,
-              background: theme.palette.mode === 'dark' 
-                ? 'rgba(255, 255, 255, 0.1)' 
-                : 'rgba(0, 0, 0, 0.05)',
-              '&:hover': {
-                background: theme.palette.mode === 'dark' 
-                  ? 'rgba(255, 255, 255, 0.2)' 
-                  : 'rgba(0, 0, 0, 0.1)',
-              }
-            }}
-          >
-            {mode === 'dark' ? <LightIcon /> : <DarkIcon />}
-          </IconButton>
+
 
           {/* Connect Wallet */}
           <Button
@@ -253,9 +237,7 @@ function Header() {
                 sx={{
                   color: theme.palette.text.primary,
                   '&:hover': {
-                    background: theme.palette.mode === 'dark' 
-                      ? 'rgba(255, 255, 255, 0.1)' 
-                      : 'rgba(0, 0, 0, 0.05)',
+                    background: 'rgba(0, 0, 0, 0.05)',
                   },
                 }}
               >
@@ -293,9 +275,7 @@ export default function HomePage() {
   return (
     <Box sx={{ 
       minHeight: '100vh', 
-      background: theme.palette.mode === 'dark'
-        ? 'linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%)'
-        : 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)'
+      background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)'
     }}>
       <Header />
       

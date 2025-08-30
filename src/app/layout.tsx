@@ -1,6 +1,24 @@
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import { CssBaseline } from '@mui/material'
-import ClientThemeProvider from './ClientThemeProvider'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'DeFi App - Trade, Stake, Farm',
+  description: 'Modern DeFi application for trading, staking, and farming',
+}
+
+// Create a simple theme for server-side rendering
+const theme = createTheme({
+  palette: {
+    mode: 'light',
+    primary: {
+      main: '#6366f1',
+    },
+    secondary: {
+      main: '#10b981',
+    },
+  },
+})
 
 export default function RootLayout({
   children,
@@ -10,9 +28,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <ClientThemeProvider>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
           {children}
-        </ClientThemeProvider>
+        </ThemeProvider>
       </body>
     </html>
   )

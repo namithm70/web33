@@ -1,10 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['localhost'],
     unoptimized: true,
   },
-  output: 'standalone',
   trailingSlash: false,
   compress: true,
   poweredByHeader: false,
@@ -12,9 +10,6 @@ const nextConfig = {
   swcMinify: true,
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
-  },
-  env: {
-    CUSTOM_KEY: process.env.CUSTOM_KEY,
   },
 }
 
