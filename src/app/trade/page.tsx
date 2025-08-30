@@ -225,7 +225,7 @@ export default function TradePage() {
       return
     }
 
-    const alert = {
+    const priceAlert = {
       id: Date.now(),
       token: newAlert.token,
       targetPrice: parseFloat(newAlert.targetPrice),
@@ -234,7 +234,7 @@ export default function TradePage() {
       status: 'active'
     }
 
-    setPriceAlerts([...priceAlerts, alert])
+    setPriceAlerts([...priceAlerts, priceAlert])
     setNewAlert({ token: '', targetPrice: '', condition: 'above' })
     setShowPriceAlert(false)
     alert('Price alert added successfully!')
