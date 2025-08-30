@@ -34,6 +34,7 @@ import {
 import {
   TrendingUp as PortfolioIcon,
   Add as AddIcon,
+  Remove as RemoveIcon,
   Settings as SettingsIcon,
   Star as StarIcon,
   TrendingUp as TrendingUpIcon,
