@@ -66,6 +66,7 @@ export default function FarmPage() {
   }, [])
 
   const [availablePools, setAvailablePools] = useState([
+    // Major Trading Pairs
     { 
       id: 'ETH-USDC', 
       name: 'ETH-USDC LP', 
@@ -79,12 +80,252 @@ export default function FarmPage() {
       rewards: 0
     },
     { 
+      id: 'BTC-USDC', 
+      name: 'BTC-USDC LP', 
+      token1: 'BTC', 
+      token2: 'USDC', 
+      icon1: '🟠', 
+      icon2: '🔵', 
+      apr: 0, 
+      tvl: 0,
+      userStaked: 0,
+      rewards: 0
+    },
+    { 
       id: 'USDT-DAI', 
       name: 'USDT-DAI LP', 
       token1: 'USDT', 
       token2: 'DAI', 
       icon1: '🟢', 
       icon2: '🟡', 
+      apr: 0, 
+      tvl: 0,
+      userStaked: 0,
+      rewards: 0
+    },
+    { 
+      id: 'ETH-USDT', 
+      name: 'ETH-USDT LP', 
+      token1: 'ETH', 
+      token2: 'USDT', 
+      icon1: '🔵', 
+      icon2: '🟢', 
+      apr: 0, 
+      tvl: 0,
+      userStaked: 0,
+      rewards: 0
+    },
+    
+    // DeFi Token Pairs
+    { 
+      id: 'UNI-ETH', 
+      name: 'UNI-ETH LP', 
+      token1: 'UNI', 
+      token2: 'ETH', 
+      icon1: '🟣', 
+      icon2: '🔵', 
+      apr: 0, 
+      tvl: 0,
+      userStaked: 0,
+      rewards: 0
+    },
+    { 
+      id: 'AAVE-ETH', 
+      name: 'AAVE-ETH LP', 
+      token1: 'AAVE', 
+      token2: 'ETH', 
+      icon1: '🟣', 
+      icon2: '🔵', 
+      apr: 0, 
+      tvl: 0,
+      userStaked: 0,
+      rewards: 0
+    },
+    { 
+      id: 'LINK-ETH', 
+      name: 'LINK-ETH LP', 
+      token1: 'LINK', 
+      token2: 'ETH', 
+      icon1: '🔵', 
+      icon2: '🔵', 
+      apr: 0, 
+      tvl: 0,
+      userStaked: 0,
+      rewards: 0
+    },
+    
+    // Layer 2 Pairs
+    { 
+      id: 'MATIC-ETH', 
+      name: 'MATIC-ETH LP', 
+      token1: 'MATIC', 
+      token2: 'ETH', 
+      icon1: '🟣', 
+      icon2: '🔵', 
+      apr: 0, 
+      tvl: 0,
+      userStaked: 0,
+      rewards: 0
+    },
+    { 
+      id: 'ARB-ETH', 
+      name: 'ARB-ETH LP', 
+      token1: 'ARB', 
+      token2: 'ETH', 
+      icon1: '🔵', 
+      icon2: '🔵', 
+      apr: 0, 
+      tvl: 0,
+      userStaked: 0,
+      rewards: 0
+    },
+    { 
+      id: 'OP-ETH', 
+      name: 'OP-ETH LP', 
+      token1: 'OP', 
+      token2: 'ETH', 
+      icon1: '🔴', 
+      icon2: '🔵', 
+      apr: 0, 
+      tvl: 0,
+      userStaked: 0,
+      rewards: 0
+    },
+    
+    // Stablecoin Pairs
+    { 
+      id: 'USDC-BUSD', 
+      name: 'USDC-BUSD LP', 
+      token1: 'USDC', 
+      token2: 'BUSD', 
+      icon1: '🔵', 
+      icon2: '🟡', 
+      apr: 0, 
+      tvl: 0,
+      userStaked: 0,
+      rewards: 0
+    },
+    { 
+      id: 'USDC-FRAX', 
+      name: 'USDC-FRAX LP', 
+      token1: 'USDC', 
+      token2: 'FRAX', 
+      icon1: '🔵', 
+      icon2: '🔵', 
+      apr: 0, 
+      tvl: 0,
+      userStaked: 0,
+      rewards: 0
+    },
+    
+    // Gaming & Metaverse Pairs
+    { 
+      id: 'AXS-ETH', 
+      name: 'AXS-ETH LP', 
+      token1: 'AXS', 
+      token2: 'ETH', 
+      icon1: '🟣', 
+      icon2: '🔵', 
+      apr: 0, 
+      tvl: 0,
+      userStaked: 0,
+      rewards: 0
+    },
+    { 
+      id: 'SAND-ETH', 
+      name: 'SAND-ETH LP', 
+      token1: 'SAND', 
+      token2: 'ETH', 
+      icon1: '🟠', 
+      icon2: '🔵', 
+      apr: 0, 
+      tvl: 0,
+      userStaked: 0,
+      rewards: 0
+    },
+    { 
+      id: 'MANA-ETH', 
+      name: 'MANA-ETH LP', 
+      token1: 'MANA', 
+      token2: 'ETH', 
+      icon1: '🔵', 
+      icon2: '🔵', 
+      apr: 0, 
+      tvl: 0,
+      userStaked: 0,
+      rewards: 0
+    },
+    
+    // Meme Coin Pairs
+    { 
+      id: 'DOGE-USDC', 
+      name: 'DOGE-USDC LP', 
+      token1: 'DOGE', 
+      token2: 'USDC', 
+      icon1: '🟡', 
+      icon2: '🔵', 
+      apr: 0, 
+      tvl: 0,
+      userStaked: 0,
+      rewards: 0
+    },
+    { 
+      id: 'SHIB-USDC', 
+      name: 'SHIB-USDC LP', 
+      token1: 'SHIB', 
+      token2: 'USDC', 
+      icon1: '🟠', 
+      icon2: '🔵', 
+      apr: 0, 
+      tvl: 0,
+      userStaked: 0,
+      rewards: 0
+    },
+    { 
+      id: 'PEPE-USDC', 
+      name: 'PEPE-USDC LP', 
+      token1: 'PEPE', 
+      token2: 'USDC', 
+      icon1: '🟢', 
+      icon2: '🔵', 
+      apr: 0, 
+      tvl: 0,
+      userStaked: 0,
+      rewards: 0
+    },
+    
+    // Emerging Token Pairs
+    { 
+      id: 'INJ-ETH', 
+      name: 'INJ-ETH LP', 
+      token1: 'INJ', 
+      token2: 'ETH', 
+      icon1: '🟣', 
+      icon2: '🔵', 
+      apr: 0, 
+      tvl: 0,
+      userStaked: 0,
+      rewards: 0
+    },
+    { 
+      id: 'TIA-USDC', 
+      name: 'TIA-USDC LP', 
+      token1: 'TIA', 
+      token2: 'USDC', 
+      icon1: '🔵', 
+      icon2: '🔵', 
+      apr: 0, 
+      tvl: 0,
+      userStaked: 0,
+      rewards: 0
+    },
+    { 
+      id: 'LDO-ETH', 
+      name: 'LDO-ETH LP', 
+      token1: 'LDO', 
+      token2: 'ETH', 
+      icon1: '🔵', 
+      icon2: '🔵', 
       apr: 0, 
       tvl: 0,
       userStaked: 0,

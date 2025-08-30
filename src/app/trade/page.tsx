@@ -109,11 +109,96 @@ export default function TradePage() {
 
   // Available tokens - user can add more
   const [availableTokens, setAvailableTokens] = useState([
+    // Major Cryptocurrencies
+    { symbol: 'BTC', name: 'Bitcoin', icon: '🟠', price: 0, change: 0, volume: 0, marketCap: 0 },
     { symbol: 'ETH', name: 'Ethereum', icon: '🔵', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'BNB', name: 'Binance Coin', icon: '🟡', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'SOL', name: 'Solana', icon: '🟣', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'ADA', name: 'Cardano', icon: '🔵', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'XRP', name: 'Ripple', icon: '⚫', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'DOT', name: 'Polkadot', icon: '🟣', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'MATIC', name: 'Polygon', icon: '🟣', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'AVAX', name: 'Avalanche', icon: '🔴', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'LINK', name: 'Chainlink', icon: '🔵', price: 0, change: 0, volume: 0, marketCap: 0 },
+    
+    // Stablecoins
     { symbol: 'USDC', name: 'USD Coin', icon: '🔵', price: 0, change: 0, volume: 0, marketCap: 0 },
     { symbol: 'USDT', name: 'Tether', icon: '🟢', price: 0, change: 0, volume: 0, marketCap: 0 },
     { symbol: 'DAI', name: 'Dai', icon: '🟡', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'BUSD', name: 'Binance USD', icon: '🟡', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'FRAX', name: 'Frax', icon: '🔵', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'TUSD', name: 'TrueUSD', icon: '🔵', price: 0, change: 0, volume: 0, marketCap: 0 },
+    
+    // DeFi Tokens
+    { symbol: 'UNI', name: 'Uniswap', icon: '🟣', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'AAVE', name: 'Aave', icon: '🟣', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'COMP', name: 'Compound', icon: '🔵', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'CRV', name: 'Curve DAO', icon: '🔵', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'SUSHI', name: 'SushiSwap', icon: '🟠', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'YFI', name: 'Yearn Finance', icon: '🟡', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'BAL', name: 'Balancer', icon: '🔵', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'SNX', name: 'Synthetix', icon: '🟣', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: '1INCH', name: '1inch', icon: '🔵', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'SAND', name: 'The Sandbox', icon: '🟠', price: 0, change: 0, volume: 0, marketCap: 0 },
+    
+    // Layer 1 & Layer 2
     { symbol: 'WBTC', name: 'Wrapped Bitcoin', icon: '🟠', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'WETH', name: 'Wrapped Ethereum', icon: '🔵', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'ARB', name: 'Arbitrum', icon: '🔵', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'OP', name: 'Optimism', icon: '🔴', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'FTM', name: 'Fantom', icon: '🔵', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'NEAR', name: 'NEAR Protocol', icon: '🟣', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'ATOM', name: 'Cosmos', icon: '🔵', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'ALGO', name: 'Algorand', icon: '🔵', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'VET', name: 'VeChain', icon: '🔵', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'ICP', name: 'Internet Computer', icon: '🟣', price: 0, change: 0, volume: 0, marketCap: 0 },
+    
+    // Gaming & Metaverse
+    { symbol: 'AXS', name: 'Axie Infinity', icon: '🟣', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'MANA', name: 'Decentraland', icon: '🔵', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'ENJ', name: 'Enjin Coin', icon: '🟣', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'GALA', name: 'Gala', icon: '🟣', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'CHZ', name: 'Chiliz', icon: '🔴', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'FLOW', name: 'Flow', icon: '🔵', price: 0, change: 0, volume: 0, marketCap: 0 },
+    
+    // AI & Big Data
+    { symbol: 'OCEAN', name: 'Ocean Protocol', icon: '🔵', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'FET', name: 'Fetch.ai', icon: '🟣', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'AGIX', name: 'SingularityNET', icon: '🟣', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'RNDR', name: 'Render Token', icon: '🟠', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'GRT', name: 'The Graph', icon: '🟣', price: 0, change: 0, volume: 0, marketCap: 0 },
+    
+    // Privacy & Security
+    { symbol: 'XMR', name: 'Monero', icon: '🟠', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'ZEC', name: 'Zcash', icon: '🟡', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'DASH', name: 'Dash', icon: '🔵', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'LTC', name: 'Litecoin', icon: '🔵', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'BCH', name: 'Bitcoin Cash', icon: '🟢', price: 0, change: 0, volume: 0, marketCap: 0 },
+    
+    // Exchange Tokens
+    { symbol: 'OKB', name: 'OKB', icon: '🔵', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'HT', name: 'Huobi Token', icon: '🔴', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'KCS', name: 'KuCoin Token', icon: '🔵', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'GT', name: 'GateToken', icon: '🟣', price: 0, change: 0, volume: 0, marketCap: 0 },
+    
+    // Meme Coins
+    { symbol: 'DOGE', name: 'Dogecoin', icon: '🟡', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'SHIB', name: 'Shiba Inu', icon: '🟠', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'PEPE', name: 'Pepe', icon: '🟢', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'FLOKI', name: 'FLOKI', icon: '🟠', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'BONK', name: 'Bonk', icon: '🟡', price: 0, change: 0, volume: 0, marketCap: 0 },
+    
+    // Emerging Tokens
+    { symbol: 'INJ', name: 'Injective', icon: '🟣', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'TIA', name: 'Celestia', icon: '🔵', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'SEI', name: 'Sei Network', icon: '🔵', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'SUI', name: 'Sui', icon: '🔵', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'APT', name: 'Aptos', icon: '🔵', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'MKR', name: 'Maker', icon: '🟠', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'LDO', name: 'Lido DAO', icon: '🔵', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'RUNE', name: 'THORChain', icon: '🟣', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'KAVA', name: 'Kava', icon: '🟣', price: 0, change: 0, volume: 0, marketCap: 0 },
+    { symbol: 'ZIL', name: 'Zilliqa', icon: '🔵', price: 0, change: 0, volume: 0, marketCap: 0 },
   ])
 
   const handleSwap = () => {

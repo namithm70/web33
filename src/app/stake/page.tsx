@@ -61,10 +61,96 @@ export default function StakePage() {
   }, [])
 
   const [availableTokens, setAvailableTokens] = useState([
+    // Major Cryptocurrencies
+    { symbol: 'BTC', name: 'Bitcoin', icon: '🟠', apy: 0, minStake: 0.001 },
     { symbol: 'ETH', name: 'Ethereum', icon: '🔵', apy: 0, minStake: 0.1 },
+    { symbol: 'BNB', name: 'Binance Coin', icon: '🟡', apy: 0, minStake: 0.1 },
+    { symbol: 'SOL', name: 'Solana', icon: '🟣', apy: 0, minStake: 1 },
+    { symbol: 'ADA', name: 'Cardano', icon: '🔵', apy: 0, minStake: 100 },
+    { symbol: 'XRP', name: 'Ripple', icon: '⚫', apy: 0, minStake: 100 },
+    { symbol: 'DOT', name: 'Polkadot', icon: '🟣', apy: 0, minStake: 1 },
+    { symbol: 'MATIC', name: 'Polygon', icon: '🟣', apy: 0, minStake: 10 },
+    { symbol: 'AVAX', name: 'Avalanche', icon: '🔴', apy: 0, minStake: 1 },
+    { symbol: 'LINK', name: 'Chainlink', icon: '🔵', apy: 0, minStake: 1 },
+    
+    // Stablecoins
     { symbol: 'USDC', name: 'USD Coin', icon: '🔵', apy: 0, minStake: 10 },
     { symbol: 'USDT', name: 'Tether', icon: '🟢', apy: 0, minStake: 10 },
     { symbol: 'DAI', name: 'Dai', icon: '🟡', apy: 0, minStake: 10 },
+    { symbol: 'BUSD', name: 'Binance USD', icon: '🟡', apy: 0, minStake: 10 },
+    { symbol: 'FRAX', name: 'Frax', icon: '🔵', apy: 0, minStake: 10 },
+    { symbol: 'TUSD', name: 'TrueUSD', icon: '🔵', apy: 0, minStake: 10 },
+    
+    // DeFi Tokens
+    { symbol: 'UNI', name: 'Uniswap', icon: '🟣', apy: 0, minStake: 1 },
+    { symbol: 'AAVE', name: 'Aave', icon: '🟣', apy: 0, minStake: 0.1 },
+    { symbol: 'COMP', name: 'Compound', icon: '🔵', apy: 0, minStake: 0.1 },
+    { symbol: 'CRV', name: 'Curve DAO', icon: '🔵', apy: 0, minStake: 10 },
+    { symbol: 'SUSHI', name: 'SushiSwap', icon: '🟠', apy: 0, minStake: 1 },
+    { symbol: 'YFI', name: 'Yearn Finance', icon: '🟡', apy: 0, minStake: 0.001 },
+    { symbol: 'BAL', name: 'Balancer', icon: '🔵', apy: 0, minStake: 1 },
+    { symbol: 'SNX', name: 'Synthetix', icon: '🟣', apy: 0, minStake: 1 },
+    { symbol: '1INCH', name: '1inch', icon: '🔵', apy: 0, minStake: 1 },
+    { symbol: 'SAND', name: 'The Sandbox', icon: '🟠', apy: 0, minStake: 10 },
+    
+    // Layer 1 & Layer 2
+    { symbol: 'WBTC', name: 'Wrapped Bitcoin', icon: '🟠', apy: 0, minStake: 0.001 },
+    { symbol: 'WETH', name: 'Wrapped Ethereum', icon: '🔵', apy: 0, minStake: 0.1 },
+    { symbol: 'ARB', name: 'Arbitrum', icon: '🔵', apy: 0, minStake: 1 },
+    { symbol: 'OP', name: 'Optimism', icon: '🔴', apy: 0, minStake: 1 },
+    { symbol: 'FTM', name: 'Fantom', icon: '🔵', apy: 0, minStake: 1 },
+    { symbol: 'NEAR', name: 'NEAR Protocol', icon: '🟣', apy: 0, minStake: 1 },
+    { symbol: 'ATOM', name: 'Cosmos', icon: '🔵', apy: 0, minStake: 0.1 },
+    { symbol: 'ALGO', name: 'Algorand', icon: '🔵', apy: 0, minStake: 1 },
+    { symbol: 'VET', name: 'VeChain', icon: '🔵', apy: 0, minStake: 100 },
+    { symbol: 'ICP', name: 'Internet Computer', icon: '🟣', apy: 0, minStake: 0.1 },
+    
+    // Gaming & Metaverse
+    { symbol: 'AXS', name: 'Axie Infinity', icon: '🟣', apy: 0, minStake: 1 },
+    { symbol: 'MANA', name: 'Decentraland', icon: '🔵', apy: 0, minStake: 10 },
+    { symbol: 'ENJ', name: 'Enjin Coin', icon: '🟣', apy: 0, minStake: 10 },
+    { symbol: 'GALA', name: 'Gala', icon: '🟣', apy: 0, minStake: 10 },
+    { symbol: 'CHZ', name: 'Chiliz', icon: '🔴', apy: 0, minStake: 10 },
+    { symbol: 'FLOW', name: 'Flow', icon: '🔵', apy: 0, minStake: 1 },
+    
+    // AI & Big Data
+    { symbol: 'OCEAN', name: 'Ocean Protocol', icon: '🔵', apy: 0, minStake: 10 },
+    { symbol: 'FET', name: 'Fetch.ai', icon: '🟣', apy: 0, minStake: 10 },
+    { symbol: 'AGIX', name: 'SingularityNET', icon: '🟣', apy: 0, minStake: 10 },
+    { symbol: 'RNDR', name: 'Render Token', icon: '🟠', apy: 0, minStake: 1 },
+    { symbol: 'GRT', name: 'The Graph', icon: '🟣', apy: 0, minStake: 10 },
+    
+    // Privacy & Security
+    { symbol: 'XMR', name: 'Monero', icon: '🟠', apy: 0, minStake: 0.1 },
+    { symbol: 'ZEC', name: 'Zcash', icon: '🟡', apy: 0, minStake: 0.1 },
+    { symbol: 'DASH', name: 'Dash', icon: '🔵', apy: 0, minStake: 0.1 },
+    { symbol: 'LTC', name: 'Litecoin', icon: '🔵', apy: 0, minStake: 0.1 },
+    { symbol: 'BCH', name: 'Bitcoin Cash', icon: '🟢', apy: 0, minStake: 0.1 },
+    
+    // Exchange Tokens
+    { symbol: 'OKB', name: 'OKB', icon: '🔵', apy: 0, minStake: 1 },
+    { symbol: 'HT', name: 'Huobi Token', icon: '🔴', apy: 0, minStake: 1 },
+    { symbol: 'KCS', name: 'KuCoin Token', icon: '🔵', apy: 0, minStake: 1 },
+    { symbol: 'GT', name: 'GateToken', icon: '🟣', apy: 0, minStake: 1 },
+    
+    // Meme Coins
+    { symbol: 'DOGE', name: 'Dogecoin', icon: '🟡', apy: 0, minStake: 100 },
+    { symbol: 'SHIB', name: 'Shiba Inu', icon: '🟠', apy: 0, minStake: 100000 },
+    { symbol: 'PEPE', name: 'Pepe', icon: '🟢', apy: 0, minStake: 100000 },
+    { symbol: 'FLOKI', name: 'FLOKI', icon: '🟠', apy: 0, minStake: 10000 },
+    { symbol: 'BONK', name: 'Bonk', icon: '🟡', apy: 0, minStake: 10000 },
+    
+    // Emerging Tokens
+    { symbol: 'INJ', name: 'Injective', icon: '🟣', apy: 0, minStake: 0.1 },
+    { symbol: 'TIA', name: 'Celestia', icon: '🔵', apy: 0, minStake: 1 },
+    { symbol: 'SEI', name: 'Sei Network', icon: '🔵', apy: 0, minStake: 1 },
+    { symbol: 'SUI', name: 'Sui', icon: '🔵', apy: 0, minStake: 1 },
+    { symbol: 'APT', name: 'Aptos', icon: '🔵', apy: 0, minStake: 1 },
+    { symbol: 'MKR', name: 'Maker', icon: '🟠', apy: 0, minStake: 0.01 },
+    { symbol: 'LDO', name: 'Lido DAO', icon: '🔵', apy: 0, minStake: 0.1 },
+    { symbol: 'RUNE', name: 'THORChain', icon: '🟣', apy: 0, minStake: 1 },
+    { symbol: 'KAVA', name: 'Kava', icon: '🟣', apy: 0, minStake: 1 },
+    { symbol: 'ZIL', name: 'Zilliqa', icon: '🔵', apy: 0, minStake: 100 },
   ])
 
   const handleStake = () => {
