@@ -1,66 +1,32 @@
-# DeFi App - Modern DeFi Platform
+# DeFi Web Application
 
-A beautiful, modern DeFi platform built with Next.js, Material UI 3, and Web3 technologies. This platform provides trading, staking, and farming capabilities with a focus on user experience and security.
+A modern, non-custodial DeFi web application built with Next.js 14, Material UI 3, and TypeScript. Features token trading, staking, farming, and portfolio analytics across multiple EVM chains.
 
 ## 🚀 Features
 
-### Trading
-- **Token Swapping**: Swap tokens with best routing and low slippage
-- **Real-time Quotes**: Live price feeds and transaction details
-- **Multiple AMM Support**: Integration with various decentralized exchanges
-- **Price Charts**: Interactive charts with historical data
-- **Transaction History**: Track all your trading activities
+- **Token Trading**: Swap tokens with best rates and lowest fees
+- **Single Asset Staking**: Earn rewards with competitive APY rates
+- **LP Farming**: Provide liquidity and earn additional rewards
+- **Portfolio Analytics**: Track investments and performance in real-time
+- **Multi-Chain Support**: Ethereum, Polygon, BSC
+- **Light/Dark Mode**: Beautiful theme switching
+- **Responsive Design**: Works on desktop, tablet, and mobile
+- **Material UI 3**: Latest design system with modern aesthetics
 
-### Staking
-- **Single Asset Staking**: Stake individual tokens for rewards
-- **Flexible & Locked Pools**: Choose between flexible or time-locked staking
-- **Boosted APY**: Higher rewards for longer lock periods
-- **Real-time Rewards**: Track your earned rewards in real-time
-- **Early Exit Options**: Withdraw early with penalty calculations
+## 🛠️ Tech Stack
 
-### Yield Farming
-- **LP Token Farming**: Stake LP tokens to earn additional rewards
-- **Multiple Reward Tokens**: Earn various tokens as farming rewards
-- **Auto-compound Options**: Automatic reinvestment of rewards
-- **Pool Multipliers**: Boosted rewards for specific pools
-- **Harvest Functionality**: Claim rewards at any time
-
-### Portfolio Management
-- **Portfolio Overview**: Complete view of all your positions
-- **Performance Analytics**: Track your returns and performance metrics
-- **Asset Allocation**: Visual breakdown of your portfolio
-- **Transaction History**: Detailed log of all activities
-- **Export Functionality**: Download your portfolio data
-
-## 🛠 Tech Stack
-
-### Frontend
-- **Next.js 14**: React framework with App Router
-- **Material UI 3**: Latest Material Design components
-- **TypeScript**: Type-safe development
-- **Framer Motion**: Smooth animations and transitions
-- **Recharts**: Beautiful data visualizations
-
-### Web3 Integration
-- **Wagmi**: React hooks for Ethereum
-- **Viem**: TypeScript interface for Ethereum
-- **WalletConnect**: Multi-wallet support
-- **MetaMask**: Popular wallet integration
-- **Coinbase Wallet**: Additional wallet option
-
-### Styling & UX
-- **Dark Theme**: Modern dark interface
-- **Responsive Design**: Mobile-first approach
-- **Glass Morphism**: Beautiful backdrop blur effects
-- **Gradient Design**: Eye-catching color schemes
-- **Smooth Animations**: Enhanced user experience
+- **Framework**: Next.js 14 (App Router)
+- **UI Library**: Material UI 3
+- **Language**: TypeScript
+- **Styling**: Emotion (CSS-in-JS)
+- **Deployment**: Vercel
 
 ## 📦 Installation
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
-   cd defi-app
+   git clone https://github.com/namithm70/web33.git
+   cd web33
    ```
 
 2. **Install dependencies**
@@ -68,143 +34,129 @@ A beautiful, modern DeFi platform built with Next.js, Material UI 3, and Web3 te
    npm install
    ```
 
-3. **Set up environment variables**
-   ```bash
-   cp .env.example .env.local
-   ```
-   
-   Add your configuration:
-   ```env
-   NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID=your_walletconnect_project_id
-   NEXT_PUBLIC_RPC_URL_MAINNET=your_mainnet_rpc_url
-   NEXT_PUBLIC_RPC_URL_POLYGON=your_polygon_rpc_url
-   NEXT_PUBLIC_RPC_URL_BSC=your_bsc_rpc_url
-   ```
-
-4. **Run the development server**
+3. **Run the development server**
    ```bash
    npm run dev
    ```
 
-5. **Open your browser**
+4. **Open your browser**
    Navigate to [http://localhost:3000](http://localhost:3000)
 
-## 🏗 Project Structure
+## 🚀 Deployment to Vercel
+
+### Option 1: Deploy via Vercel Dashboard
+
+1. **Push to GitHub**
+   ```bash
+   git add .
+   git commit -m "Ready for Vercel deployment"
+   git push origin main
+   ```
+
+2. **Connect to Vercel**
+   - Go to [vercel.com](https://vercel.com)
+   - Sign in with your GitHub account
+   - Click "New Project"
+   - Import your `web33` repository
+   - Vercel will automatically detect Next.js settings
+
+3. **Deploy**
+   - Click "Deploy"
+   - Your app will be live in minutes!
+
+### Option 2: Deploy via Vercel CLI
+
+1. **Install Vercel CLI**
+   ```bash
+   npm i -g vercel
+   ```
+
+2. **Login to Vercel**
+   ```bash
+   vercel login
+   ```
+
+3. **Deploy**
+   ```bash
+   vercel
+   ```
+
+4. **Follow the prompts**
+   - Link to existing project or create new
+   - Choose your team/account
+   - Deploy!
+
+### Option 3: One-Click Deploy
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/namithm70/web33)
+
+## 🔧 Environment Variables
+
+Create a `.env.local` file in the root directory:
+
+```env
+NEXT_PUBLIC_APP_NAME=DeFi App
+NEXT_PUBLIC_APP_VERSION=1.0.0
+```
+
+## 📁 Project Structure
 
 ```
 src/
-├── app/                    # Next.js App Router pages
-│   ├── layout.tsx         # Root layout with providers
-│   ├── page.tsx           # Home page
-│   ├── trade/             # Trading interface
-│   ├── stake/             # Staking pools
-│   ├── farm/              # Yield farming
-│   └── portfolio/         # Portfolio management
+├── app/                    # Next.js App Router
+│   ├── layout.tsx         # Root layout
+│   ├── page.tsx           # Homepage
+│   ├── trade/page.tsx     # Trading interface
+│   ├── stake/page.tsx     # Staking dashboard
+│   ├── farm/page.tsx      # Farming interface
+│   ├── portfolio/page.tsx # Portfolio analytics
+│   └── ClientThemeProvider.tsx # Theme management
 ├── components/            # Reusable components
-│   ├── Header.tsx         # Navigation header
-│   ├── WalletConnect.tsx  # Wallet connection
-│   ├── ChainSelector.tsx  # Network switching
-│   ├── TokenSelector.tsx  # Token selection
-│   ├── StatsCard.tsx      # Statistics display
-│   └── FeatureCard.tsx    # Feature showcase
-├── hooks/                 # Custom React hooks
-├── utils/                 # Utility functions
-├── types/                 # TypeScript type definitions
-└── store/                 # State management
+│   └── Header.tsx        # Navigation header
 ```
 
-## 🎨 Design System
+## 🎨 Customization
 
-### Color Palette
-- **Primary**: `#6366f1` (Indigo)
-- **Secondary**: `#10b981` (Emerald)
-- **Background**: `#0a0a0a` (Dark)
-- **Surface**: `#1a1a1a` (Card background)
-- **Success**: `#10b981` (Green)
-- **Warning**: `#f59e0b` (Amber)
-- **Error**: `#ef4444` (Red)
+### Theme Configuration
+Edit `src/app/ClientThemeProvider.tsx` to customize:
+- Color schemes
+- Typography
+- Component styles
+- Dark/light mode preferences
 
-### Typography
-- **Font Family**: Inter (with fallbacks)
-- **Headings**: Bold weights (600-800)
-- **Body**: Regular weight (400)
-- **Captions**: Light weight (300)
+### Adding New Pages
+1. Create new directory in `src/app/`
+2. Add `page.tsx` file
+3. Import and use the `Header` component
+4. Add navigation link in `src/components/Header.tsx`
 
-### Components
-- **Cards**: Glass morphism with backdrop blur
-- **Buttons**: Gradient backgrounds with hover effects
-- **Inputs**: Clean, minimal design
-- **Charts**: Dark theme optimized
-- **Modals**: Blurred backdrop with smooth animations
+## 🔍 Available Scripts
 
-## 🔧 Configuration
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
+- `npm run type-check` - Run TypeScript checks
 
-### Supported Networks
-- **Ethereum Mainnet**: Primary network
-- **Polygon**: Layer 2 scaling solution
-- **BSC**: Binance Smart Chain
+## 🌐 Live Demo
 
-### Wallet Support
-- **MetaMask**: Most popular wallet
-- **WalletConnect**: Universal wallet connector
-- **Coinbase Wallet**: Exchange wallet
+Visit the deployed application: [Your Vercel URL]
 
-### Token Support
-- **Major Tokens**: ETH, USDC, USDT, WBTC, DAI
-- **DeFi Tokens**: UNI, LINK, AAVE
-- **Custom Tokens**: Add any ERC-20 token
+## 📝 License
 
-## 🚀 Deployment
-
-### Vercel (Recommended)
-1. Connect your GitHub repository to Vercel
-2. Set environment variables in Vercel dashboard
-3. Deploy automatically on push to main branch
-
-### Other Platforms
-- **Netlify**: Static site hosting
-- **AWS Amplify**: Full-stack deployment
-- **Docker**: Containerized deployment
-
-## 🔒 Security Features
-
-- **Non-custodial**: Users control their private keys
-- **Wallet Integration**: Secure wallet connections
-- **Transaction Validation**: Input validation and error handling
-- **Network Security**: Support for secure networks
-- **Audit Ready**: Clean, auditable code structure
-
-## 📱 Mobile Support
-
-- **Responsive Design**: Works on all screen sizes
-- **Touch Optimized**: Mobile-friendly interactions
-- **PWA Ready**: Progressive Web App capabilities
-- **Fast Loading**: Optimized for mobile networks
+This project is licensed under the MIT License.
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- **Material UI**: Beautiful component library
-- **Wagmi**: Excellent Web3 hooks
-- **Framer Motion**: Smooth animations
-- **Recharts**: Data visualization
-- **Next.js**: React framework
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
 
 ## 📞 Support
 
-For support, email support@defiapp.com or join our Discord community.
+For support, email support@defiapp.com or create an issue in the repository.
 
 ---
 
-**Built with ❤️ for the DeFi community**
+Built with ❤️ using Next.js and Material UI
