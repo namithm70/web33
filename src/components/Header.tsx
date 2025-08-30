@@ -19,15 +19,13 @@ import {
 } from '@mui/material'
 import {
   Menu as MenuIcon,
-  Brightness4 as DarkIcon,
-  Brightness7 as LightIcon,
   Wallet as WalletIcon,
 } from '@mui/icons-material'
-import { useAppTheme } from '../app/ClientThemeProvider'
+
 
 export default function Header() {
   const theme = useTheme()
-  const { mode, toggleTheme } = useAppTheme()
+
   const [mobileOpen, setMobileOpen] = useState(false)
   const isMobile = useMediaQuery(theme.breakpoints.down('md'))
   const router = useRouter()
@@ -96,23 +94,7 @@ export default function Header() {
 
         {/* Right side controls */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          {/* Theme Toggle */}
-          <IconButton
-            onClick={toggleTheme}
-            sx={{ 
-              color: theme.palette.text.primary,
-              background: theme.palette.mode === 'dark' 
-                ? 'rgba(255, 255, 255, 0.1)' 
-                : 'rgba(0, 0, 0, 0.05)',
-              '&:hover': {
-                background: theme.palette.mode === 'dark' 
-                  ? 'rgba(255, 255, 255, 0.2)' 
-                  : 'rgba(0, 0, 0, 0.1)',
-              }
-            }}
-          >
-            {mode === 'dark' ? <LightIcon /> : <DarkIcon />}
-          </IconButton>
+
 
           {/* Connect Wallet */}
           <Button
